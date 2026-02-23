@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MDA Workshop 2026 — Bridging the Gap</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--surface2:#242836;--surface3:#2e3345;
+  --text:#e8eaf0;--text-dim:#8b90a0;--accent:#6c8cff;--accent2:#a78bfa;
+  --green:#34d399;--orange:#fb923c;--red:#f87171;--yellow:#fbbf24;
+  --radius:12px;--transition:0.25s ease;
+}
+html{font-size:20px;scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+h1{font-size:2.4rem;font-weight:700;letter-spacing:-0.02em}
+h2{font-size:1.8rem;font-weight:600;letter-spacing:-0.01em;margin-bottom:0.8rem}
+h3{font-size:1.3rem;font-weight:600;margin-bottom:0.5rem}
+p{margin-bottom:0.6rem}
+a{color:var(--accent);text-decoration:none}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--surface3);padding:0.5rem 1rem;display:flex;gap:0.4rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav::-webkit-scrollbar{height:4px}
+.nav::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:2px}
+.nav-btn{padding:0.5rem 1rem;border:none;background:transparent;color:var(--text-dim);font-size:0.85rem;font-weight:500;border-radius:8px;cursor:pointer;white-space:nowrap;transition:var(--transition)}
+.nav-btn:hover{background:var(--surface2);color:var(--text)}
+.nav-btn.active{background:var(--accent);color:#fff}
+
+/* TAB CONTENT */
+.tab{display:none;padding:1.5rem 2rem 3rem;max-width:1400px;margin:0 auto}
+.tab.active{display:block}
+
+/* SECTION HEADERS */
+.section-title{font-size:1.4rem;font-weight:600;color:var(--accent);margin:2rem 0 1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--surface3)}
+.section-title:first-child{margin-top:0}
+
+/* EXERCISE CARDS */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:1rem}
+.card{background:var(--surface);border:1px solid var(--surface3);border-radius:var(--radius);overflow:hidden;transition:var(--transition)}
+.card:hover{border-color:var(--accent)}
+.card-header{padding:1rem 1.2rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem}
+.card-tag{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:0.2rem 0.5rem;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.tag-universal{background:#6c8cff30;color:#6c8cff}
+.tag-bada{background:#34d39930;color:#34d399}
+.tag-ds{background:#a78bfa30;color:#a78bfa}
+.tag-demle{background:#fb923c30;color:#fb923c}
+.tag-swe{background:#f8717130;color:#f87171}
+.tag-aiswe{background:#fbbf2430;color:#fbbf24}
+.card-prompt{font-size:1.05rem;font-weight:500;line-height:1.4;flex:1}
+.card-reveal{background:var(--surface2);padding:0 1.2rem;max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.3s ease}
+.card-reveal.open{max-height:500px;padding:1rem 1.2rem}
+.card-reveal-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);margin-bottom:0.3rem}
+.card-reveal-text{font-size:1rem;color:var(--text);line-height:1.4}
+.card-click-hint{font-size:0.65rem;color:var(--text-dim);text-align:center;padding:0.4rem;border-top:1px solid var(--surface3)}
+.card.revealed .card-click-hint{display:none}
+
+/* ACCORDION (mock interview questions) */
+.accordion{margin-bottom:0.8rem;background:var(--surface);border:1px solid var(--surface3);border-radius:var(--radius);overflow:hidden}
+.accordion:hover{border-color:var(--accent2)}
+.acc-header{padding:1rem 1.2rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:0.8rem}
+.acc-header h3{margin:0;font-size:1.05rem;flex:1}
+.acc-chevron{font-size:1.2rem;color:var(--text-dim);transition:transform 0.3s ease;flex-shrink:0}
+.accordion.open .acc-chevron{transform:rotate(180deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height 0.4s ease}
+.accordion.open .acc-body{max-height:2000px}
+.acc-content{padding:0 1.2rem 1.2rem}
+.acc-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem;margin-top:0.8rem}
+.acc-label.q-label{color:var(--accent)}
+.acc-label.fu-label{color:var(--orange)}
+.acc-label.listen-label{color:var(--green)}
+.acc-label.great-label{color:var(--yellow)}
+.acc-great{background:var(--surface2);border-left:3px solid var(--yellow);padding:0.8rem 1rem;border-radius:0 6px 6px 0;margin-top:0.4rem;font-size:0.88rem;line-height:1.5;color:var(--text);white-space:pre-wrap}
+.acc-text{font-size:0.95rem;line-height:1.45}
+.cat-label{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:0.2rem 0.5rem;border-radius:4px;background:var(--surface3);color:var(--text-dim);white-space:nowrap}
+
+/* HOME PAGE */
+.hero{text-align:center;padding:2rem 0 2.5rem}
+.hero h1{font-size:2.8rem;margin-bottom:0.3rem}
+.hero .subtitle{font-size:1.3rem;color:var(--text-dim);margin-bottom:0.2rem}
+.hero .meta{font-size:0.9rem;color:var(--text-dim)}
+.framework{background:var(--surface);border:1px solid var(--surface3);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem}
+.framework h2{color:var(--accent);margin-bottom:0.8rem}
+.framework table{width:100%;border-collapse:collapse;margin:0.8rem 0}
+.framework th,.framework td{text-align:left;padding:0.5rem 0.8rem;border-bottom:1px solid var(--surface3);font-size:0.9rem}
+.framework th{color:var(--accent);font-weight:600;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.05em}
+.framework td:first-child{font-weight:600;white-space:nowrap;color:var(--accent2)}
+.key-sentence{background:var(--accent);color:#fff;padding:0.8rem 1.2rem;border-radius:8px;font-size:1.1rem;font-weight:600;text-align:center;margin:1rem 0}
+
+/* RESOURCES */
+.checklist{background:var(--surface);border:1px solid var(--surface3);border-radius:var(--radius);padding:1.2rem;margin-bottom:1rem}
+.checklist h3{color:var(--accent2);margin-bottom:0.6rem}
+.checklist ol,.checklist ul{padding-left:1.2rem;font-size:0.9rem}
+.checklist li{margin-bottom:0.3rem}
+.resource-card{background:var(--surface);border:1px solid var(--surface3);border-radius:var(--radius);padding:1.2rem;margin-bottom:0.8rem}
+.resource-card h3{color:var(--green);margin-bottom:0.5rem}
+.commitment-box{background:var(--surface2);border:2px dashed var(--accent);border-radius:var(--radius);padding:1.5rem;margin-top:1rem;text-align:center}
+.commitment-box h3{color:var(--accent);margin-bottom:0.6rem}
+.commitment-item{font-size:1.1rem;margin:0.5rem 0;color:var(--text)}
+
+/* STREAM PILLS */
+.stream-pills{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.stream-pill{padding:0.3rem 0.8rem;border-radius:20px;font-size:0.75rem;font-weight:600;border:1px solid var(--surface3);color:var(--text-dim)}
+.stream-pill.recommended{border-color:var(--accent);color:var(--accent)}
+
+/* MOCK INTERVIEWS TAB - CATEGORY FILTER */
+.cat-filters{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.cat-filter-btn{padding:0.4rem 1rem;border:1px solid var(--surface3);background:var(--surface);color:var(--text-dim);border-radius:20px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:var(--transition)}
+.cat-filter-btn:hover{border-color:var(--accent);color:var(--text)}
+.cat-filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+@media(max-width:900px){
+  html{font-size:16px}
+  .cards-grid{grid-template-columns:1fr}
+  .tab{padding:1rem}
+  .hero h1{font-size:2rem}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav"></nav>
+
+<main id="main"></main>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+const TABS = [
+  {id:'home',label:'Home'},
+  {id:'universal',label:'Universal'},
+  {id:'bada',label:'BA / DA'},
+  {id:'ds',label:'Data Science'},
+  {id:'demle',label:'DE / MLE'},
+  {id:'swe',label:'SWE'},
+  {id:'aiswe',label:'AI / SWE'},
+  {id:'mock',label:'Mock Interviews'},
+  {id:'resources',label:'Resources'}
+];
+
+const EXERCISE_CARDS = {
+universal: [
+  {id:'U1',tag:'Universal',tagClass:'tag-universal',prompt:'"Why can\'t I just split my data 80/20 and call it a day? What\'s the point of cross-validation?"',followup:'My dataset has a time component — sales over 3 years. Does that change how you\'d validate? Why?'},
+  {id:'U2',tag:'Universal',tagClass:'tag-universal',prompt:'"Your model gets 99% accuracy on the test set. Before I celebrate, tell me what could have gone wrong."',followup:'Give me a specific example of how data leakage could sneak into a project you\'ve worked on or could imagine working on.'},
+  {id:'U3',tag:'Universal',tagClass:'tag-universal',prompt:'"Your dataset is 97% negative and 3% positive. Your model reports 97% accuracy. Are you impressed? What\'s your plan?"',followup:'Between oversampling the minority class and adjusting class weights in the model — which would you try first and why?'},
+  {id:'U4',tag:'Universal',tagClass:'tag-universal',prompt:'"Walk me through overfitting. How would you know if your model is overfitting, and what would you do about it?"',followup:'You mentioned [regularization / cross-validation / simpler model]. Why does that specific technique help?'},
+  {id:'U5',tag:'Universal',tagClass:'tag-universal',prompt:'"In your experience, what matters more — choosing the right model or engineering good features? Defend your answer."',followup:'Give me a specific example of a feature you created (or could create) that would make a meaningful difference.'},
+],
+bada: [
+  {id:'BA1',tag:'BA/DA',tagClass:'tag-bada',prompt:'"What are SQL window functions? How are they different from GROUP BY? Give me a scenario where I\'d need one."',followup:'How would you find each customer\'s most recent order without a window function? Why is the window function approach better?'},
+  {id:'BA2',tag:'BA/DA',tagClass:'tag-bada',prompt:'"We ran an A/B test and the p-value is 0.03. Should we ship the feature? What other things should I be thinking about?"',followup:'What if I told you we checked the results every day for two weeks and stopped as soon as it was significant. Does that concern you?'},
+  {id:'BA3',tag:'BA/DA',tagClass:'tag-bada',prompt:'"Your stakeholder asks you to present monthly revenue trends and also show the breakdown by product category. Walk me through your visualization choices and why."',followup:'The VP says the chart is too complicated. How do you simplify without losing the insight?'},
+  {id:'BA4',tag:'BA/DA',tagClass:'tag-bada',prompt:'"A new product manager comes to you and says \'I need a dashboard to track how my feature is doing.\' What questions do you ask before building anything?"',followup:'They say "just track everything." How do you push back and help them focus?'},
+  {id:'BA5',tag:'BA/DA',tagClass:'tag-bada',prompt:'"Your analysis shows that customers who use feature X have 30% higher retention. The PM wants to push all users to feature X. What do you say?"',followup:'How would you design a study to determine if feature X actually causes higher retention?'},
+  {id:'BA6',tag:'BA/DA',tagClass:'tag-bada',prompt:'"A business user says the numbers in your report don\'t match their spreadsheet. Walk me through how you\'d investigate."',followup:'How do you prevent this kind of discrepancy in the first place?'},
+],
+ds: [
+  {id:'DS1',tag:'DS',tagClass:'tag-ds',prompt:'"I have a model that detects credit card fraud. Should I optimize for precision or recall? Walk me through your reasoning."',followup:'What if the business says false alarms are costing them too much in manual review? How do you balance that?'},
+  {id:'DS2',tag:'DS',tagClass:'tag-ds',prompt:'"Your training accuracy is 97% but your test accuracy is 68%. Diagnose the problem and tell me what you\'d try."',followup:'Would adding more training data help here? Why or why not?'},
+  {id:'DS3',tag:'DS',tagClass:'tag-ds',prompt:'"I have a tabular dataset. Help me decide between logistic regression and random forest. What questions would you ask before choosing?"',followup:'My stakeholder is a VP who doesn\'t know ML. Does that change your recommendation? Why?'},
+  {id:'DS4',tag:'DS',tagClass:'tag-ds',prompt:'"You\'re building a model with 200 features but only 5,000 rows. You\'re worried about overfitting. Walk me through your options."',followup:'When would you pick L1 over L2? What\'s the practical difference in what you get out?'},
+  {id:'DS5',tag:'DS',tagClass:'tag-ds',prompt:'"Explain the difference between bagging and boosting. When would you pick one over the other?"',followup:'If your single decision tree is underfitting, would bagging help? Why or why not?'},
+  {id:'DS6',tag:'DS',tagClass:'tag-ds',prompt:'"A non-technical colleague asks: how does a model actually learn? Explain it to them."',followup:'What happens if the learning rate is set wrong? What does that look like in practice?'},
+],
+demle: [
+  {id:'DE1',tag:'DE/MLE',tagClass:'tag-demle',prompt:'"What\'s the difference between ETL and ELT? When would you choose one architecture over the other?"',followup:'Where does a tool like dbt fit in? What problem does it solve?'},
+  {id:'DE2',tag:'DE/MLE',tagClass:'tag-demle',prompt:'"Design a pipeline that ingests clickstream data from a website and makes it available for analysis. Walk me through the architecture."',followup:'How do you handle late-arriving data? What about schema changes from the source?'},
+  {id:'DE3',tag:'DE/MLE',tagClass:'tag-demle',prompt:'"A query on a 500M-row table takes 45 minutes. Walk me through how you\'d investigate and optimize it."',followup:'What\'s the difference between partitioning and clustering? When would each help?'},
+  {id:'DE4',tag:'DE/MLE',tagClass:'tag-demle',prompt:'"Explain fact tables and dimension tables. When would you use a star schema vs. a more normalized design?"',followup:'What\'s a slowly changing dimension? Give me an example and how you\'d handle it.'},
+  {id:'DE5',tag:'DE/MLE',tagClass:'tag-demle',prompt:'"Your data science team hands you a trained model in a Jupyter notebook and says \'put this in production.\' What are the steps and what could go wrong?"',followup:'The model\'s accuracy starts degrading after 3 months. What\'s happening and how would you set up monitoring?'},
+  {id:'DE6',tag:'DE/MLE',tagClass:'tag-demle',prompt:'"We need to process transaction data. Help me decide between a batch pipeline that runs hourly and a streaming pipeline. What are the tradeoffs?"',followup:'What if the business wants real-time fraud alerts but also historical analytics? Can you have both?'},
+],
+swe: [
+  {id:'SW1',tag:'SWE',tagClass:'tag-swe',prompt:'"What happens when you type a URL into a browser and hit enter? Walk me through it."',followup:'At which point in that chain would you add caching, and what kind?'},
+  {id:'SW2',tag:'SWE',tagClass:'tag-swe',prompt:'"What\'s the difference between an API and a library? Design a simple REST API for a to-do list app."',followup:'A teammate says we should use GraphQL instead of REST. What\'s their argument and when would you agree?'},
+  {id:'SW3',tag:'SWE',tagClass:'tag-swe',prompt:'"Explain the difference between a stack and a queue. Give me a real-world scenario where picking the wrong one would cause a bug."',followup:'How would you implement a queue using two stacks? Why would anyone do that?'},
+  {id:'SW4',tag:'SWE',tagClass:'tag-swe',prompt:'"Your application is running slowly in production. Walk me through how you\'d diagnose and fix it."',followup:'You find one database query takes 5 seconds. What are your options besides rewriting the query?'},
+  {id:'SW5',tag:'SWE',tagClass:'tag-swe',prompt:'"What is version control and why does it matter? Explain Git to someone who has never used it."',followup:'Two people edited the same file at the same time. What happens and how do you resolve it?'},
+  {id:'SW6',tag:'SWE',tagClass:'tag-swe',prompt:'"What does it mean to write testable code? Give me an example of code that\'s hard to test and how you\'d refactor it."',followup:'Your team has no tests at all. Where do you start — unit tests, integration tests, or end-to-end? Why?'},
+],
+aiswe: [
+  {id:'AI1',tag:'AI/SWE',tagClass:'tag-aiswe',prompt:'"You\'ve used transformer-based models. Without getting into the math, explain what the attention mechanism does and why it was a breakthrough."',followup:'What problem did attention solve that RNNs couldn\'t? Give me a concrete example.'},
+  {id:'AI2',tag:'AI/SWE',tagClass:'tag-aiswe',prompt:'"You\'ve used ChatGPT and similar tools. At a high level, how does a large language model actually generate a response?"',followup:'Why do LLMs sometimes produce confident but completely wrong answers? What\'s happening mechanically?'},
+  {id:'AI3',tag:'AI/SWE',tagClass:'tag-aiswe',prompt:'"What is RAG and why would you use it instead of just asking an LLM directly?"',followup:'What could go wrong with a RAG system? Where are the failure modes?'},
+  {id:'AI4',tag:'AI/SWE',tagClass:'tag-aiswe',prompt:'"What are embeddings and why are they useful? How is a Word2Vec embedding different from what BERT produces?"',followup:'The word "bank" appears in two sentences: "river bank" and "bank account." How does each model handle this?'},
+  {id:'AI5',tag:'AI/SWE',tagClass:'tag-aiswe',prompt:'"We need to classify customer support tickets into 10 categories. Should we fine-tune a model or use prompt engineering with a large LLM? Walk me through the tradeoffs."',followup:'What data would you need for fine-tuning? What are the risks?'},
+  {id:'AI6',tag:'AI/SWE',tagClass:'tag-aiswe',prompt:'"Why do we use cross-entropy loss for classification instead of just measuring accuracy during training?"',followup:'If the cost of a false negative is 100x the cost of a false positive, how would you modify the loss function?'},
+],
+};
+
+const MOCK_QUESTIONS = {
+A: {name:'Category A: Fundamentals',streams:'All Streams',questions:[
+  {id:'A1',q:'Explain the bias-variance tradeoff. Then tell me — in a project you\'ve worked on — which side were you dealing with and how did you handle it?',fu:'If you had to explain this to a product manager in one sentence, what would you say?',listen:'Understands that high bias = too simple / systematically wrong, high variance = too sensitive to training data. Connects to a real project. Uses a concrete analogy or example, not just definitions.',great:'The bias-variance tradeoff is about two ways a model can go wrong. High bias means it\'s too simple — it misses real patterns and is systematically off. High variance means it\'s too sensitive to the training data — it memorizes noise and falls apart on new data. Think of it like an archer: high bias means they always shoot left of the target, high variance means their shots are scattered everywhere. In my capstone project, I was dealing with variance. I built a decision tree to predict customer churn and it had 95% training accuracy but only 70% on the holdout set. Classic overfitting. I chose to switch to a random forest because bagging reduces variance by averaging many trees, each trained on a different sample. That brought my test accuracy to 83% without sacrificing interpretability — which mattered because my stakeholder needed to understand which features drove churn. For a PM, I\'d say: "We need a model that\'s complex enough to capture real patterns but simple enough that it doesn\'t just memorize the training data — we\'re finding that balance."'},
+  {id:'A2',q:'You\'re building a classifier and your manager says "just maximize accuracy." Push back. Why might accuracy be the wrong goal?',fu:'What metric would you propose instead, and how would you justify it?',listen:'Mentions class imbalance as the key reason accuracy misleads. Proposes F1, precision, recall, or AUC depending on context. Frames the pushback in terms the manager would understand (business cost of different error types).',great:'I\'d push back respectfully because accuracy can be deeply misleading when your classes are imbalanced — and most real-world problems are. Say we\'re building a fraud detector and 99% of transactions are legitimate. A model that just predicts "not fraud" every single time gets 99% accuracy. Technically impressive, practically useless — it catches zero fraud. The issue is accuracy treats all errors equally, but in business they\'re rarely equal. Missing a fraudulent transaction might cost us $5,000, while a false alarm just means a quick manual review. I\'d propose we focus on recall for the fraud class — what percentage of actual fraud are we catching — with a constraint on precision so we don\'t drown the review team in false positives. Concretely, I\'d show the manager: "If we optimize for accuracy, we catch 10% of fraud. If we optimize for recall at 90% precision, we catch 85% of fraud but flag some legitimate transactions. The second model saves us $2M a year." Framing it in dollars makes the case.'},
+  {id:'A3',q:'Walk me through how a decision tree makes a split. Not the theory — explain it like we\'re looking at a spreadsheet.',fu:'What\'s the biggest weakness of a single decision tree?',listen:'Concrete description — picks the feature/threshold that best separates classes. Mentions information gain, Gini, or entropy by intuition, not formula. Weaknesses: overfitting, instability, greedy (locally optimal).',great:'Imagine we have a spreadsheet of 1,000 customers — columns for age, income, purchase history, and a label: churned or not. The tree looks at every column and every possible split point and asks: "If I divide the data here, do I get groups that are more pure?" Say it tries age > 35. Left side: 60% churned. Right side: 30% churned. Then it tries income > $50K and gets 80% vs. 20%. Income gives a cleaner split, so it picks that first. Then within each group it repeats — finds the next best split, and the next, until the groups are mostly pure or it hits a stopping rule. It\'s greedy — it picks the best split right now without thinking about what splits come later. That\'s also its biggest weakness: small changes in data can completely change which split it picks first, cascading into a totally different tree. Plus, without constraints, it\'ll keep splitting until every leaf has one data point — perfect on training data, terrible on anything new. That\'s why we usually prune the tree or use ensembles like random forests.'},
+  {id:'A4',q:'What is regularization and why does it exist? Give me intuition, not formulas.',fu:'If I add L1 regularization and half my feature coefficients go to zero — good or bad?',listen:'Regularization penalizes complexity to prevent overfitting. L1 drives coefficients to zero (feature selection). "Good thing" if many features are irrelevant — you\'ve simplified the model. Shows understanding that this is a deliberate tradeoff.',great:'Regularization is a way of telling the model: "I want you to find a good fit, but I\'m going to penalize you for being too complex." Without it, a model with many features will happily assign weight to noise — it\'ll find spurious patterns in the training data that don\'t generalize. Regularization adds a cost for large coefficients, so the model has to justify every feature it uses. If half the coefficients go to zero with L1, that\'s actually a good sign — it means the model identified that those features weren\'t pulling their weight. L1 specifically encourages sparsity: it prefers to completely zero out a weak feature rather than keep a tiny coefficient. You\'ve effectively done automatic feature selection. The model is simpler, faster, and probably more robust. The only concern would be if domain knowledge tells you one of those zeroed features should matter — then I\'d investigate whether it\'s correlated with another feature that\'s absorbing its effect.'},
+  {id:'A5',q:'Someone says "the more features the better — throw everything in." Agree or disagree?',fu:'How would you decide which features to keep?',listen:'Disagrees — mentions curse of dimensionality, overfitting, noise, multicollinearity. Feature selection methods: correlation analysis, feature importance from trees, L1 regularization, domain knowledge.',great:'Hard disagree. More features sounds intuitive — more information should help, right? But in practice it creates several problems. First, the curse of dimensionality: as features grow, your data becomes sparse in that high-dimensional space, and the model needs exponentially more data to find patterns. Second, noise: irrelevant features add signal the model tries to learn from, leading to overfitting. Third, multicollinearity — correlated features make coefficients unstable and hard to interpret. Fourth, practically: more features means slower training, harder debugging, and a model that\'s harder to explain. To decide what to keep, I\'d start with domain knowledge — which features should theoretically matter? Then I\'d check correlations between features and drop highly correlated pairs. I\'d train a quick random forest and look at feature importances to see what\'s actually contributing. And if I\'m using a linear model, L1 regularization does this automatically by zeroing out weak features. Usually I find 80% of the predictive power comes from 20% of the features.'},
+]},
+B: {name:'Category B: Model Reasoning',streams:'DS, DE/MLE, AI/SWE',questions:[
+  {id:'B1',q:'You used gradient boosting (XGBoost, LightGBM). Explain how boosting works conceptually. What\'s the "gradient" part doing?',fu:'Why is boosting more prone to overfitting than bagging?',listen:'Boosting trains models sequentially — each new model focuses on errors the previous ones made. Gradient = using the gradient of the loss function to identify where the current model is most wrong. Overfitting: sequential focus on errors means it can memorize noise.',great:'Boosting builds models one at a time, where each new model specifically targets the mistakes the previous ones made. Imagine you take a test, get some questions wrong, then study only those topics and retake it. Then study only the ones you still got wrong. Each round you\'re focusing harder on your weakest areas. The "gradient" part is how it identifies those mistakes. It computes the gradient of the loss function — essentially, for each data point, it asks "in which direction and by how much is my current prediction wrong?" The next model is then trained to predict those residual errors. This is powerful because it can handle complex patterns, but it\'s more prone to overfitting than bagging because of that sequential focus. Bagging trains independent models on random subsets — if one memorizes noise, the others average it out. Boosting doubles down on hard examples, and sometimes those hard examples are just noise or outliers. That\'s why tuning the learning rate and number of rounds is critical — you\'re essentially controlling how aggressively it chases mistakes.'},
+  {id:'B2',q:'Explain what an embedding is. Start from scratch — imagine I\'ve never heard the term.',fu:'If two words have similar embeddings, what does that mean? How did the model learn that?',listen:'Dense numerical representation in a vector space. Similar things are close together. Learned from context — words used in similar contexts get similar vectors.',great:'An embedding is a way to represent something — a word, a product, a user — as a list of numbers so that similar things end up with similar numbers. Think of it like GPS coordinates for concepts. Paris and London are closer together than Paris and a banana, and the coordinates reflect that. But instead of 2 dimensions like latitude/longitude, embeddings might use 100 or 300 dimensions, each capturing some abstract aspect of meaning. If two words have similar embeddings — like "king" and "queen" — it means the model learned they appear in similar contexts. You see "king" near words like "throne," "crown," "royal," and "queen" appears near those same words. The model was never told they\'re related — it figured it out from patterns in millions of sentences. The classic example: the vector from "king" to "queen" is almost the same as "man" to "woman." The model discovered gender as a direction in this space, purely from context. That\'s what makes embeddings so useful — they capture meaning in a form that math can work with.'},
+  {id:'B3',q:'You\'ve used a pre-trained model (BERT, ResNet, GPT). What does "pre-trained" actually mean, and what are you trusting?',fu:'When would a pre-trained model be a bad idea?',listen:'Pre-trained = already learned from a large dataset. You\'re trusting that the representations transfer. Bad when: domain is very different, need specific behavior, bias/safety concerns, model too large for constraints.',great:'Pre-trained means the model has already been trained on a massive dataset before you ever touch it. BERT read most of the English internet. ResNet was trained on millions of labeled images. They\'ve already learned foundational representations — BERT understands grammar, context, and word relationships; ResNet understands edges, textures, shapes, and objects. When I use a pre-trained model, I\'m trusting that these general representations transfer to my specific task. It\'s like hiring someone with 10 years of general experience and teaching them your specific domain — they already know the fundamentals. A pre-trained model would be a bad idea in a few cases. If your domain is radically different from the training data — say, using BERT trained on English Wikipedia for medical radiology reports full of specialized jargon. Or if you need very specific, controlled behavior where the model\'s prior knowledge might introduce bias. Or practically, if the model is too large for your infrastructure — GPT-scale models need serious compute. In those cases, a smaller purpose-built model trained on your own data might actually perform better.'},
+  {id:'B4',q:'Cross-entropy loss vs. MSE — why different loss functions for classification and regression? What goes wrong if you swap them?',fu:'Could you design a custom loss function for a business problem?',listen:'Cross-entropy penalizes confident wrong predictions heavily. MSE doesn\'t punish confident mistakes enough for classification. Custom loss: asymmetric costs (fraud — missing positive is 100x worse).',great:'The key difference is how they penalize mistakes. In classification, your model outputs a probability — say 0.95 that an email is spam. If it\'s actually not spam, cross-entropy loss punishes that very harshly because the model was confidently wrong. MSE would say the error is (0.95 - 0)^2 = 0.9 — bad but not catastrophic. Cross-entropy says -log(0.05) = about 3.0 — much more severe. This matters because in classification, confident wrong predictions are dangerous and we want the model to learn from them aggressively. If you use MSE for classification, the gradients become very small when the model outputs extreme probabilities, so it learns slowly and often gets stuck. For regression, MSE makes sense because errors are symmetric and continuous — being off by 5 is twice as bad as being off by 2.5. For a custom loss function, absolutely. In fraud detection, missing a fraudulent transaction costs 100x more than a false alarm. I\'d weight the loss: multiply the penalty for false negatives by 100. The model would learn to be more aggressive about flagging potential fraud, accepting more false positives to catch more true fraud.'},
+  {id:'B5',q:'Neural network vs. XGBoost for tabular data, 50K rows, 30 features. Recommend one.',fu:'Your colleague disagrees. What\'s their strongest argument?',listen:'Recommends XGBoost — dominates tabular benchmarks. Reasons: works with moderate data, handles interactions, fast, interpretable. NN argument: sequential/spatial structure, data will grow, transfer learning.',great:'For tabular data with 50K rows and 30 features, I\'d recommend XGBoost without hesitation. It consistently outperforms neural networks on tabular benchmarks — this has been shown in multiple studies. With 50K rows, XGBoost has enough data to learn meaningful patterns but a neural net would be hungry for more. XGBoost handles feature interactions naturally through its tree structure, requires less hyperparameter tuning to get good results, trains in seconds instead of minutes, and gives me feature importances I can show to stakeholders. My colleague\'s strongest argument for a neural net would be: "What if there\'s hidden structure in the data we\'re not seeing?" Neural nets can learn arbitrary representations, and if there are complex non-linear interactions that even boosted trees miss, a neural net might find them. They\'d also argue that if we expect the dataset to grow to millions of rows, the neural net will scale better. And if we want to combine this tabular data with text or images later, having a neural architecture makes multi-modal integration easier. Fair points — but for this specific setup, XGBoost is the pragmatic choice. I can always revisit if the data grows.'},
+]},
+C: {name:'Category C: Project Ownership',streams:'All Streams',questions:[
+  {id:'C1',q:'Tell me about a project you\'ve worked on. 2 minutes.',fu:'What\'s the one thing you\'d do differently?',listen:'Structured answer (STAR-T or similar). Explains WHY they made choices. Honest about results. The "do differently" answer shows genuine reflection, not a humble-brag.',great:'In my capstone, our team partnered with a local retail chain that was losing customers and didn\'t know why. They had 18 months of transaction data for 50,000 customers but no analytics capability — just gut feelings. My specific role was leading the modeling piece. The constraint was that any solution had to be explainable enough for their marketing team to act on, which ruled out black-box approaches. I chose XGBoost over logistic regression because our exploratory analysis showed non-linear relationships between purchase frequency and churn — but I considered logistic regression first because of the interpretability requirement. XGBoost gave us feature importances that were intuitive enough. We achieved an F1 score of 0.78 for the churn class, which was meaningful because their baseline — just guessing based on recency — was around 0.45. The surprising finding was that category diversity was a stronger predictor than spend amount. What I\'d do differently: I\'d spend more time on feature engineering upfront. We rushed into modeling and only later realized that time-between-purchases was more predictive than anything we\'d built. That taught me that understanding the data deeply before touching a model is worth the time investment.'},
+  {id:'C2',q:'Walk me through the key decision in your project. Why that approach? What else did you consider?',fu:'If I gave you 10x more data and said it needs to run in real-time, what changes?',listen:'Names at least one alternative and WHY they didn\'t choose it. Scaling question: awareness that notebooks aren\'t production. Mentions latency, batch vs. real-time, model simplification.',great:'The key decision was choosing between building a single global churn model versus segment-specific models for each customer type. I chose the global model with customer segment as a feature because we only had 50K customers — splitting into segments would have left some groups with too few examples to learn from reliably. I also considered a two-stage approach: first classify the customer segment, then run a segment-specific model. But that added complexity, more points of failure, and the segment classifier itself would need training data we didn\'t have labeled. With 10x the data and a real-time requirement, a lot changes. The Jupyter notebook approach is out — I\'d need a proper serving infrastructure. I\'d likely simplify the model to logistic regression or a small neural net for latency reasons, since XGBoost with 500 trees has inference overhead. I\'d set up a feature store so features are pre-computed and the model just does a lookup plus inference at request time. And I\'d add a monitoring layer tracking prediction distributions over time so we catch data drift before it tanks performance. The Jupyter-to-production gap is real — it\'s a different engineering problem.'},
+  {id:'C3',q:'Tell me about a time something didn\'t work as expected. What happened?',fu:'How did you figure out what went wrong?',listen:'Specific story, not vague. Debugging process: checked data first, looked at error patterns, tried simpler approaches. Doesn\'t blame tools or teammates.',great:'Midway through the project, our model\'s performance suddenly jumped from an F1 of 0.72 to 0.96 overnight. That felt too good to be true, and it was. I investigated by first looking at what had changed — we\'d added a new batch of features the day before, including a "days since last purchase" feature. I checked the feature importances and that single feature had become dominant. Then I realized the issue: we\'d calculated days since last purchase using the full dataset including the label period. So for churned customers, the number was always high because... they\'d already churned. Classic data leakage — the feature was encoding the outcome. I caught it by checking the feature against the label directly: the correlation was 0.94, which is a red flag. The fix was recalculating the feature using only data from before our prediction cutoff date. Performance dropped back to 0.74, which was honest. The lesson was to always check suspiciously good results and to be paranoid about temporal leakage in any time-based prediction problem. Now I set up my train/test splits by time before I touch any features.'},
+  {id:'C4',q:'You report [a metric] on your project. Walk me through what it means and whether I should be impressed.',fu:'What would you need to see before putting this in front of a stakeholder or into production?',listen:'Contextualizes the metric — doesn\'t just say "92% is good." Mentions baseline comparison, class distribution, cross-validation, confidence intervals.',great:'We reported an F1 of 0.78 on the churn class. Whether you should be impressed depends on context. Our dataset was 70/30 — 30% churned — so it\'s not severely imbalanced but the minority class is still harder. A naive model predicting everyone as not-churned gets 70% accuracy but 0.0 F1 on churn. A model predicting everyone as churned gets F1 of about 0.46 on the churn class. So our 0.78 is a significant improvement over both baselines. It means we\'re catching about 80% of actual churners while keeping precision around 76% — roughly 3 out of 4 people we flag actually do churn. Before putting this in front of a stakeholder, I\'d want to see performance across customer segments — does it work equally well for high-value and low-value customers? I\'d also want confidence intervals from cross-validation, not just a single split. And I\'d want to frame it in business terms: "For every 100 customers we flag, 76 would actually churn. Our intervention costs $5 per customer. The average customer is worth $200 annually. Even if only half of the 76 are retained, that\'s $7,600 in value for $500 in cost." That\'s what moves a stakeholder.'},
+  {id:'C5',q:'What was the hardest part of your project — not the technical part. Everything else.',fu:'How did you communicate results to non-technical stakeholders?',listen:'Mentions data quality, stakeholder management, scope changes, time pressure, ambiguous requirements. Communication: simplified for audience, used visuals, focused on impact.',great:'The hardest part was scope management. Our retail partner kept changing what they wanted. First it was "predict who will churn." Then it was "also tell us why." Then "can you also recommend what to do about it?" Each addition was reasonable on its own, but we had 10 weeks and a team of three. I had to have an honest conversation: "We can do prediction and explanation well, or all three poorly." We agreed to focus on prediction with feature importances as the explanation layer, and scoped the recommendation piece as a future phase. For communicating results, I dropped all the ML jargon. Instead of "F1 score of 0.78," I showed them a chart: "Out of every 100 customers about to churn, our model catches 80 of them. Of the customers we flag, about 76% actually do churn." Then I showed the three biggest drivers as a simple bar chart — purchase frequency, category diversity, days since last visit — because they needed to know where to act, not how the model works. The VP said, "So if we re-engage customers who haven\'t bought in 30 days and usually buy from multiple categories, we\'re targeting the right people?" Exactly. That translation from model output to business action was more valuable than the model itself.'},
+]},
+D: {name:'Category D: Thinking on Your Feet',streams:'DS, DE/MLE, AI/SWE',questions:[
+  {id:'D1',q:'I\'m an e-commerce company. Customer churn is our biggest problem. You have 6 weeks. What\'s your plan?',fu:'Week 2: the stakeholder changes the definition of churn. What do you do?',listen:'Structured approach — starts with understanding the problem, not jumping to modeling. Mentions: define churn precisely, explore data, build baseline, iterate. Adapts to stakeholder change, raises timeline impact.',great:'Week 1: I\'m not touching a model. I need to deeply understand the problem. What does "churn" mean here — no purchase in 30 days? 90 days? Cancelled their account? This definition drives everything. I\'d sit with the business team, understand the economics of churn vs. retention, and agree on a precise definition and prediction window. Then I\'d explore the data — what do we have? Transaction logs, browsing behavior, customer service tickets? What\'s the churn rate? What does a churned customer look like vs. a retained one? Week 2-3: Build a simple baseline — logistic regression with 5-10 obvious features. Not because it\'s the final model, but because it tells me what signal exists in the data and gives a benchmark to beat. Week 3-5: Iterate. Better features, try XGBoost, evaluate properly with time-based splits. Week 6: Package it — clear documentation, a presentation with business impact, and a recommendation for next steps. If the stakeholder changes the churn definition in week 2, I don\'t panic — but I\'m transparent. "That changes our target variable, which means the exploratory work still holds but the baseline model needs to be retrained. I can absorb this if we keep the scope tight, but if more changes come, we need to discuss timeline." Flexibility is fine; endless scope creep kills projects.'},
+  {id:'D2',q:'Your model has been in production for 6 months and performance is degrading. Possible causes?',fu:'What is data drift and how would you monitor for it?',listen:'Data drift (input distribution changed), concept drift (relationship changed), upstream data quality issues, seasonal patterns. Monitoring: track distributions, prediction distributions, actual vs. predicted.',great:'Several things could be going wrong. First, data drift: the distribution of incoming data has changed. Maybe your customer base shifted — more international users, different demographics, different behavior. The model was trained on one world but is now predicting in a different one. Second, concept drift: even if the inputs look similar, the relationship between inputs and the outcome has changed. What predicted churn 6 months ago might not predict churn today because the product changed or a competitor entered the market. Third, upstream data quality: a data pipeline broke and a key feature is now null 40% of the time, or a schema changed and a field means something different. Fourth, seasonality: maybe the model was trained on summer data and it\'s now winter. Data drift specifically means the statistical distribution of your input features has shifted. To monitor it, I\'d track distribution statistics for key features over time — mean, standard deviation, percentiles — and set alerts when they deviate beyond a threshold. I\'d also monitor the distribution of predictions: if your model suddenly starts predicting 90% negative when it used to be 70%, something changed. And I\'d track actual outcomes vs. predictions on a rolling window. The combination gives you early warning before stakeholders notice.'},
+  {id:'D3',q:'Model performs well overall (85%) but terribly for one subgroup (52%). What do you do?',fu:'Can you fix this without hurting overall performance?',listen:'Takes it seriously. Investigates: subgroup underrepresented? Different distributions? Mentions: stratified evaluation, oversampling, separate models, fairness metrics. Honest about tradeoff.',great:'This is a serious problem and I wouldn\'t dismiss it just because the overall number looks good. An overall 85% can mask real harm to specific groups. First, I\'d investigate why. Is this subgroup underrepresented in training data? If it\'s 3% of the dataset, the model literally didn\'t see enough examples to learn their patterns. Do their features look different — different distributions, different relationships with the outcome? Maybe the features that matter for the majority don\'t capture what matters for this group. Then I\'d look at solutions. Oversampling or upweighting the subgroup in training gives the model more signal. Adding features specific to this group\'s behavior might help. Training a separate model just for this subgroup is an option if the patterns are truly different. Can I fix it without hurting overall performance? Honestly, maybe not entirely. There\'s often a tradeoff — improving the subgroup might cost 1-2 points overall. But I\'d argue that\'s the right trade. An 83% model that\'s fair to all groups is better than an 85% model that fails for a specific population. I\'d frame this for stakeholders in terms of risk: "Who is in this subgroup, and what happens to them when we get it wrong?"'},
+  {id:'D4',q:'A colleague says "let\'s use GPT-4 for this classification task." You think traditional ML is better. Make your case.',fu:'When would you agree the LLM approach is better?',listen:'Cost, latency, data privacy, reproducibility, interpretability favor traditional ML. LLM better when: labels expensive, requires language understanding, zero/few-shot needed, task evolves frequently.',great:'For a well-defined classification task with labeled data, traditional ML wins on almost every practical dimension. Cost: a fine-tuned XGBoost model runs for fractions of a penny per prediction; GPT-4 API calls add up fast at scale. Latency: XGBoost inference is milliseconds; an API call is seconds. Data privacy: traditional ML runs on our infrastructure; sending customer data to an external API has compliance implications. Reproducibility: same input to XGBoost gives the same output; LLMs can vary. Interpretability: I can show feature importances; I can\'t explain why GPT-4 chose a category. And we already have labeled training data, which is the whole reason traditional ML works well. I\'d agree the LLM approach is better in specific situations: if we don\'t have labeled data and labeling is expensive — GPT-4 can classify zero-shot or few-shot without any training examples. If the task requires genuine language understanding — like classifying support tickets where the meaning is nuanced and context-dependent. Or if the categories change frequently — adding a new class to GPT-4 is a prompt edit; adding one to XGBoost means relabeling and retraining. It\'s about matching the tool to the constraints.'},
+  {id:'D5',q:'Design a system for both real-time alerting and historical trend analysis on transaction data.',fu:'What when real-time and historical numbers disagree?',listen:'Separation of concerns — streaming for real-time, batch for historical. Mentions Lambda/Kappa concepts. Disagreement: different windows, aggregation logic, eventual consistency.',great:'I\'d separate the two concerns because they have fundamentally different requirements. For real-time alerting — say fraud detection — I need a streaming pipeline. Transactions flow in, get processed through a stream processor like Kafka Streams or Flink, and are evaluated against rules or a lightweight model within seconds. Alerts fire immediately. For historical trend analysis — revenue trends, customer behavior patterns — I need a batch pipeline. Transactions land in a data warehouse, get transformed and aggregated by a tool like dbt on a scheduled cadence, and power dashboards and reports. Both pipelines read from the same source but serve different purposes. This is essentially the Lambda architecture pattern: a speed layer for real-time and a batch layer for accuracy. When the numbers disagree — and they will — it\'s usually because of timing and aggregation differences. The streaming layer might count a transaction at processing time while the batch layer counts it at transaction time. Late-arriving data shows up in the next batch run but was missed in the real-time window. The key is being transparent about this: real-time numbers are approximate and fast, batch numbers are accurate and delayed. They\'ll converge, but you shouldn\'t expect them to match at any given moment. I\'d document the expected discrepancy so stakeholders aren\'t surprised.'},
+]},
+E: {name:'Category E: Data & Analytics',streams:'BA/DA, DE/MLE',questions:[
+  {id:'E1',q:'What is the difference between ETL and ELT? When would you choose one over the other?',fu:'Where does dbt fit in?',listen:'ETL = transform before loading (traditional). ELT = load raw, transform in warehouse (modern, cloud). dbt = the T in ELT — transforms data already in the warehouse using SQL.',great:'ETL — Extract, Transform, Load — is the traditional approach where you pull data from sources, clean and reshape it on a separate processing server, and then load the polished result into your warehouse. ELT — Extract, Load, Transform — flips the last two steps: you pull raw data and dump it directly into the warehouse, then transform it there. The shift happened because cloud warehouses like BigQuery and Snowflake made compute incredibly cheap and powerful. It used to make sense to transform before loading because warehouse storage and compute were expensive. Now, storage is pennies per gigabyte and these warehouses can process terabytes in seconds. So you load everything raw, keep a full history, and transform on the fly. I\'d choose ETL if I\'m working with a legacy on-prem system with limited warehouse capacity, or if I need to heavily filter data for compliance before it even touches the warehouse. I\'d choose ELT for almost any modern cloud setup — it\'s more flexible, auditable, and you can always re-transform the raw data if requirements change. dbt fits in as the "T" in ELT. It\'s a tool that lets you write transformations as SQL select statements, version-controls them like code, handles dependencies between models, and runs tests. It turned data transformation from fragile scripts into a proper engineering workflow.'},
+  {id:'E2',q:'Build a dashboard for the VP of Marketing showing customer acquisition. Before opening any tool — what questions do you ask?',fu:'VP says "just show me everything." How do you handle it?',listen:'Questions: what decisions? Who\'s the audience? What\'s "acquisition"? Time frame? Push back diplomatically, propose focused MVP, offer to iterate.',great:'Before I touch any tool, I need to understand the purpose and constraints. My questions: What decisions will this dashboard inform? Are you deciding where to allocate budget, evaluating a campaign, or reporting to the board? That changes what I show. How do you define "acquisition" — first purchase, account creation, app install? Different definitions give different numbers. What time frame matters — weekly, monthly, quarterly trends? Is there a specific campaign or channel you\'re evaluating? Who else will see this — just you, or your whole team? And do you have existing metrics or targets I should benchmark against? If they say "just show me everything," I\'d respond: "I can show you everything, but a dashboard that shows everything tells you nothing. How about this — let me build a focused first version with the three metrics that most directly answer your top question. We\'ll review it together in a week, and I\'ll iterate based on what\'s missing." In practice, I\'d start with: acquisition volume over time with channel breakdown, cost per acquisition by channel, and a conversion funnel from first touch to first purchase. That covers volume, efficiency, and where you\'re losing people. Then I\'d add based on their feedback rather than guessing.'},
+  {id:'E3',q:'Explain fact tables and dimension tables. Why does this matter for analytics?',fu:'What\'s a slowly changing dimension? Example?',listen:'Facts = measures/events. Dimensions = context. Star schema enables fast queries. SCD: customer address changes — Type 1 (overwrite), Type 2 (versioning).',great:'Think of it like a spreadsheet with two types of tabs. Fact tables record events — things that happened. Each row is a transaction, a click, a shipment. They contain numbers you can measure: revenue, quantity, duration. They\'re usually tall and narrow — millions of rows, relatively few columns. Dimension tables provide context around those events — who, what, where, when. Customer names and segments, product categories and descriptions, store locations, calendar dates. They\'re wide and short — thousands of rows with lots of descriptive columns. The star schema connects them: a fact table in the center with foreign keys pointing to dimension tables around it like a star. This matters for analytics because it lets you slice and dice facts by any dimension — "show me revenue by product category by region by quarter" becomes a simple join pattern. It\'s fast because warehouses are optimized for this shape. A slowly changing dimension is when a dimension attribute changes over time. A customer moves from Ontario to BC. Type 1: you just overwrite the address — simple, but you lose history. Last month\'s sales report now shows the customer in BC even though they bought from Ontario. Type 2: you add a new row with the new address and effective dates, keeping the old row. Now you can correctly attribute past sales to Ontario and future sales to BC. Type 2 is more work but preserves truth, which matters a lot for accurate historical reporting.'},
+  {id:'E4',q:'SQL query takes 45 minutes on 500M rows. Walk me through optimization.',fu:'Partitioning vs. indexing — when does each help?',listen:'First: understand query plan. Look for full scans, missing filters, unnecessary joins. Partition = reduces data scanned. Index = speeds up row finding.',great:'First thing: I look at the query execution plan, not the query itself. The plan tells me where the time is actually going. Common culprits: full table scans on 500M rows when I only need a week of data — am I filtering on the partition column? Unnecessary joins — am I joining a large table when I could filter first, then join? Inefficient aggregations — am I doing a GROUP BY on the full table before filtering? My optimization checklist: add WHERE clauses on partition columns to reduce data scanned. Push filters as early as possible — filter before joining, not after. Check if I\'m joining on indexed columns. Replace SELECT * with only the columns I need. Look for subqueries that could be CTEs or window functions. Partitioning vs. indexing: partitioning divides the table into physical segments, usually by date. When I query WHERE date = \'2025-01-15\', the engine skips 99% of the data — it only reads that partition. It\'s about reducing the volume of data scanned. Indexing creates a lookup structure on specific columns — like a book\'s index. When I query WHERE customer_id = 12345, the index tells the engine exactly where to find that row instead of scanning everything. Partitioning helps with range queries on the partition column; indexing helps with point lookups on specific values. For a 500M row table, I almost certainly want both: partition by date, index by frequently-filtered columns.'},
+  {id:'E5',q:'Business user says "numbers don\'t match." Investigate.',fu:'How do you prevent this?',listen:'Systematic: compare sources, definitions, time windows, filters, aggregation logic. Prevention: single source of truth, documented definitions, data contracts, automated testing.',great:'Step one: don\'t get defensive. "Numbers don\'t match" is a symptom, not a diagnosis. I\'d start by understanding both sides: "Walk me through your number — what are you counting, over what time period, with what filters?" Then I\'d compare that to my methodology. The usual suspects: different definitions — they count "revenue" including taxes, I exclude them. Different time windows — their report runs at 8 AM and captures late data, mine runs at midnight. Different filters — they exclude returns, I include them. Different granularity — they\'re looking at order date, I\'m looking at ship date. I\'d trace both numbers back to the source, step by step, until I find where they diverge. To prevent this: establish a single source of truth with one canonical definition for every key metric, documented and agreed upon by business and data teams. Build that into a governed data model — one table everyone uses for "revenue," not five different queries. Add automated tests that catch definition drift. Set up data contracts between teams so upstream changes don\'t silently break downstream numbers. And reconciliation checks — compare key metrics across sources on a schedule so discrepancies surface before a VP finds them.'},
+  {id:'E6',q:'Measure the impact of a marketing campaign with no A/B testing platform.',fu:'What assumptions are you making and how could they be wrong?',listen:'Pre/post with control group or matched markets. Mentions difference-in-differences, confounders, seasonality. Honest about limitations.',great:'Without a proper A/B platform, I\'d use a quasi-experimental approach. The most robust option is difference-in-differences: find a comparable group that wasn\'t exposed to the campaign — maybe a different region or customer segment — and compare the change in behavior before and after the campaign for both groups. The "difference in differences" controls for trends that affect everyone. If exposed customers increased purchases by 20% and unexposed customers increased by 8%, I\'d attribute about 12 percentage points to the campaign. Alternatively, if I can\'t find a clean control group, I\'d build a time-series forecast of what would have happened without the campaign based on historical trends, and measure the gap between actual and predicted during the campaign period. My assumptions and where they break: I\'m assuming the control group was truly unexposed and comparable — maybe they saw spillover effects or they\'re different in ways I can\'t measure. I\'m assuming no other major events happened simultaneously — another campaign, a product launch, a competitor\'s outage. I\'m assuming the pre-campaign trend would have continued — maybe there was organic growth independent of marketing. I\'d be honest with stakeholders: "This gives us strong directional evidence, not causal proof. I\'m 80% confident the campaign drove a 10-15% lift, but I can\'t rule out that some of this was seasonal."'},
+]},
+};
+
+// Stream tab -> which categories of mock questions to show
+const STREAM_MOCK_MAP = {
+  universal: ['A','C'],
+  bada: ['E'],
+  ds: ['B'],
+  demle: ['D','E'],
+  swe: ['D','E'],
+  aiswe: ['D'],
+};
+
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
+
+function renderCards(cards) {
+  return `<div class="cards-grid">${cards.map((c,i) => `
+    <div class="card" onclick="toggleCard(this)">
+      <div class="card-header">
+        <span class="card-prompt">${c.prompt}</span>
+        <span class="card-tag ${c.tagClass}">${c.tag}</span>
+      </div>
+      <div class="card-reveal">
+        <div class="card-reveal-label">Follow-up Question</div>
+        <div class="card-reveal-text">${c.followup}</div>
+      </div>
+      <div class="card-click-hint">Click to reveal follow-up</div>
+    </div>
+  `).join('')}</div>`;
+}
+
+function renderMockQuestions(categories, showListenFor) {
+  let html = '';
+  categories.forEach(catKey => {
+    const cat = MOCK_QUESTIONS[catKey];
+    if (!cat) return;
+    html += `<h3 style="color:var(--accent2);margin:1.5rem 0 0.8rem">${cat.name} <span style="font-size:0.7rem;color:var(--text-dim);font-weight:400">— ${cat.streams}</span></h3>`;
+    cat.questions.forEach(q => {
+      html += `
+      <div class="accordion" onclick="toggleAccordion(this)">
+        <div class="acc-header">
+          <h3>${q.id}: ${q.q}</h3>
+          <span class="acc-chevron">&#9660;</span>
+        </div>
+        <div class="acc-body"><div class="acc-content">
+          <div class="acc-label fu-label">Follow-up</div>
+          <div class="acc-text">${q.fu}</div>
+          ${showListenFor ? `<div class="acc-label listen-label">Listen for</div><div class="acc-text">${q.listen}</div>` : ''}
+          ${q.great ? `<div class="acc-label great-label">Great Answer</div><div class="acc-great">${q.great}</div>` : ''}
+        </div></div>
+      </div>`;
+    });
+  });
+  return html;
+}
+
+// ============================================================
+// BUILD TABS
+// ============================================================
+
+function buildHome() {
+  return `
+  <div class="hero">
+    <h1>Bridging the Gap</h1>
+    <p class="subtitle">From Knowing to Showing in Technical Interviews</p>
+    <p class="meta">MDA Workshop &bull; Feb 23, 2026 &bull; Ravin Lathigra</p>
+  </div>
+
+  <div class="framework">
+    <h2>The "Why" Ladder</h2>
+    <p>Every answer should survive 3 levels of "why." The interviewer is listening for Level 3.</p>
+    <table>
+      <tr><th>Level</th><th>Example</th></tr>
+      <tr><td>Level 1: What</td><td>"I used Random Forest."</td></tr>
+      <tr><td>Level 2: How</td><td>"It handles non-linear relationships using bagging."</td></tr>
+      <tr><td style="color:var(--green)">Level 3: Why</td><td>"My features had complex interactions. With 50K rows, bagging reduces variance without overfitting. And I needed feature importances for my non-technical stakeholder."</td></tr>
+    </table>
+  </div>
+
+  <div class="framework">
+    <h2>The Explanation Pattern</h2>
+    <p>For any technical concept question — works across all streams:</p>
+    <table>
+      <tr><th>Step</th><th>What to Do</th><th>Example (Overfitting)</th></tr>
+      <tr><td>1. Plain Language</td><td>One sentence, no jargon</td><td>"The model memorized the training data instead of learning the pattern."</td></tr>
+      <tr><td>2. Intuition</td><td>Why does it exist / matter?</td><td>"Like studying only past exams — you'd ace those but bomb a new one."</td></tr>
+      <tr><td>3. Real Example</td><td>Concrete scenario with stakes</td><td>"Training accuracy was 97% but validation was 72%."</td></tr>
+      <tr><td>4. Limits</td><td>Tradeoffs, when it breaks</td><td>"Regularization helps, but too much and you underfit."</td></tr>
+    </table>
+  </div>
+
+  <div class="framework">
+    <h2>STAR-T Framework</h2>
+    <p>A checklist, not a script. Works for any project in any stream.</p>
+    <table>
+      <tr><th>Letter</th><th>Stands For</th><th>What to Say</th></tr>
+      <tr><td>S</td><td>Situation</td><td>What was the problem? Who cared? What data did you have?</td></tr>
+      <tr><td>T</td><td>Task</td><td>What was your specific role? What were the constraints?</td></tr>
+      <tr><td>A</td><td>Approach</td><td>What methods did you choose and <strong>WHY</strong>? Alternatives considered?</td></tr>
+      <tr><td>R</td><td>Results</td><td>What happened? What metrics? What surprised you?</td></tr>
+      <tr><td>T</td><td>Takeaways</td><td>What would you do differently? What did you learn?</td></tr>
+    </table>
+    <div class="key-sentence">"I chose X <strong>because</strong> Y, and I considered Z <strong>but</strong> it didn't fit because..."</div>
+    <table>
+      <tr><th>Stream</th><th>Approach Example</th></tr>
+      <tr><td>BA/DA</td><td>"I chose a waterfall chart over a stacked bar because the stakeholder needed to see sequential impact on revenue."</td></tr>
+      <tr><td>DS</td><td>"I chose XGBoost over logistic regression because the feature interactions were non-linear. I considered a neural net but the dataset was too small."</td></tr>
+      <tr><td>DE/MLE</td><td>"I designed incremental ELT rather than full-refresh ETL because the table was 500M rows and full refreshes hit our 2-hour SLA."</td></tr>
+      <tr><td>AI/SWE</td><td>"I used RAG over fine-tuning because the knowledge base changes weekly and fine-tuning would require constant retraining."</td></tr>
+    </table>
+  </div>`;
+}
+
+function buildStreamTab(streamKey, streamLabel, tagClass) {
+  const cards = EXERCISE_CARDS[streamKey] || [];
+  const mockCats = STREAM_MOCK_MAP[streamKey] || [];
+  let html = `<h2>${streamLabel}</h2>`;
+
+  // Exercise cards
+  html += `<div class="section-title">Exercise 1: The Explanation Lab</div>`;
+  if (streamKey === 'universal') {
+    html += renderCards(cards);
+  } else {
+    html += renderCards([...EXERCISE_CARDS.universal, ...cards]);
+  }
+
+  // Mock interview questions
+  if (mockCats.length > 0) {
+    html += `<div class="section-title">Exercise 3: Mock Interview Questions</div>`;
+    html += renderMockQuestions(mockCats, true);
+  }
+
+  return html;
+}
+
+function buildMockInterviewsTab() {
+  let html = `<h2>Mock Interview Question Bank</h2>
+  <p style="color:var(--text-dim);margin-bottom:0.5rem">All 26 questions organized by category. Click to expand and see follow-ups + "Listen for" hints.</p>
+  <div class="stream-pills" style="margin-bottom:1.5rem">
+    <span class="stream-pill"><strong>BA/DA:</strong> A, C, or E</span>
+    <span class="stream-pill"><strong>DS:</strong> A, B, or C</span>
+    <span class="stream-pill"><strong>DE/MLE:</strong> B, D, or E</span>
+    <span class="stream-pill"><strong>AI/SWE:</strong> B, C, or D</span>
+    <span class="stream-pill"><strong>Not sure:</strong> A or C</span>
+  </div>
+  <div class="cat-filters" id="catFilters"></div>`;
+  html += `<div id="mockQuestionsContainer">`;
+  html += renderMockQuestions(['A','B','C','D','E'], true);
+  html += `</div>`;
+  return html;
+}
+
+function buildResourcesTab() {
+  return `
+  <h2>Resources</h2>
+
+  <div class="section-title">Top 10 Concepts — Every Stream</div>
+  <div class="checklist">
+    <h3>Explain these, don't just define them</h3>
+    <ol>
+      <li>Overfitting vs. underfitting — detection and prevention</li>
+      <li>Bias-variance tradeoff — with an example</li>
+      <li>Cross-validation — why a single split isn't enough</li>
+      <li>Precision vs. recall vs. F1 — when each matters</li>
+      <li>Why accuracy is often misleading</li>
+      <li>Feature engineering — why it matters</li>
+      <li>Data leakage — what it is, how it sneaks in</li>
+      <li>Correlation vs. causation — with a business example</li>
+      <li>A/B testing basics — significance, sample size, pitfalls</li>
+      <li>How to choose between two approaches — the reasoning framework</li>
+    </ol>
+  </div>
+
+  <div class="section-title">Go Deeper by Stream</div>
+
+  <div class="checklist">
+    <h3 style="color:var(--green)">Business / Data Analyst</h3>
+    <ul>
+      <li>SQL window functions — vs. GROUP BY, when you need them</li>
+      <li>Data visualization best practices — choosing chart types for the question</li>
+      <li>Defining and tracking KPIs — how to push back on "track everything"</li>
+      <li>Data quality and reconciliation — "the numbers don't match"</li>
+      <li>Stakeholder communication — translating technical findings</li>
+      <li>Experimental design — when you can't run a clean A/B test</li>
+    </ul>
+  </div>
+  <div class="checklist">
+    <h3 style="color:var(--accent2)">Data Scientist</h3>
+    <ul>
+      <li>Regularization — L1 vs. L2, intuition</li>
+      <li>Ensemble methods — bagging vs. boosting, when to use each</li>
+      <li>Gradient descent — how models learn, learning rate effects</li>
+      <li>Model selection — logistic regression vs. trees vs. neural nets</li>
+      <li>Class imbalance — resampling, class weights, metric changes</li>
+      <li>Confusion matrix — Type I vs. Type II errors with real stakes</li>
+      <li>AUC-ROC — what the curve actually shows</li>
+    </ul>
+  </div>
+  <div class="checklist">
+    <h3 style="color:var(--orange)">Data / ML Engineer</h3>
+    <ul>
+      <li>ETL vs. ELT — modern data stack, where dbt fits</li>
+      <li>Star schema — fact tables, dimension tables, slowly changing dimensions</li>
+      <li>SQL optimization — partitioning, clustering, query plans</li>
+      <li>Pipeline design — batch vs. streaming tradeoffs</li>
+      <li>Data modeling — normalization vs. denormalization for analytics</li>
+      <li>Production ML — model serving, monitoring, drift detection</li>
+      <li>Data quality frameworks — testing, validation, alerting</li>
+    </ul>
+  </div>
+  <div class="checklist">
+    <h3 style="color:var(--yellow)">AI / Software Engineer</h3>
+    <ul>
+      <li>Transformers & attention — what attention does, why it replaced RNNs</li>
+      <li>Embeddings — Word2Vec vs. contextual (BERT), the "bank" example</li>
+      <li>How LLMs generate text — next-token prediction, temperature</li>
+      <li>Why LLMs hallucinate — plausibility vs. truth</li>
+      <li>RAG — architecture, failure modes, chunk size tradeoffs</li>
+      <li>Fine-tuning vs. prompting — when each is appropriate</li>
+      <li>Loss functions — cross-entropy vs. MSE, custom losses</li>
+      <li>CNNs — spatial structure, convolutions, transfer learning</li>
+    </ul>
+  </div>
+
+  <div class="section-title">Study Resources</div>
+  <div class="resource-card">
+    <h3>Concept Refreshers (intuition, not memorization)</h3>
+    <ul>
+      <li>StatQuest with Josh Starmer (YouTube) — clear ML explanations</li>
+      <li>3Blue1Brown (YouTube) — neural networks, linear algebra</li>
+      <li>Andrew Ng's ML Specialization (Coursera) — the foundational course</li>
+    </ul>
+  </div>
+  <div class="resource-card">
+    <h3>Books</h3>
+    <ul>
+      <li>"Approaching Almost Any Machine Learning Problem" — Abhishek Thakur</li>
+      <li>"Designing Machine Learning Systems" — Chip Huyen</li>
+    </ul>
+  </div>
+  <div class="resource-card">
+    <h3 style="color:var(--accent)">The Most Effective Prep Tool</h3>
+    <p style="font-size:1.2rem;font-weight:600">A practice partner and 15 minutes.</p>
+  </div>
+
+  <div class="section-title">Post-Workshop Plan</div>
+  <div class="framework">
+    <h3 style="color:var(--yellow)">Tonight (20 min)</h3>
+    <ul style="padding-left:1.2rem;font-size:0.9rem">
+      <li>Read your STAR-T notes from the workshop out loud once</li>
+      <li>Write down the follow-up questions you couldn't answer</li>
+    </ul>
+    <h3 style="color:var(--orange);margin-top:1rem">Before Your Next Interview (45 min)</h3>
+    <ul style="padding-left:1.2rem;font-size:0.9rem">
+      <li>For every decision in your project: "I chose ___ because ___. The alternative was ___."</li>
+      <li>Re-read your resume. Can you go 3 levels of "why" on every bullet?</li>
+      <li>Re-read the job posting. What skills do they list? Prepare examples for each.</li>
+      <li>One practice session with your triad partner (even 15 min helps)</li>
+    </ul>
+    <h3 style="color:var(--green);margin-top:1rem">During the Interview</h3>
+    <ul style="padding-left:1.2rem;font-size:0.9rem">
+      <li><strong>Pause for 5 seconds to think.</strong> Interviewers respect it.</li>
+      <li>"I'm not certain, but here's how I'd reason about it..." is a great answer.</li>
+      <li>Asking a clarifying question shows you think before you act.</li>
+      <li>"I don't know" + silence is NOT OK. Always offer your thinking process.</li>
+    </ul>
+  </div>
+
+  <div class="section-title">Follow-Up Questions You WILL Be Asked</div>
+  <div class="checklist">
+    <h3>Universal</h3>
+    <ul>
+      <li>"Why that approach and not [alternative]?"</li>
+      <li>"What was the biggest limitation?"</li>
+      <li>"If you had more time or data, what would you change?"</li>
+      <li>"Walk me through a mistake and what you learned."</li>
+      <li>"How did you communicate your results to stakeholders?"</li>
+      <li>"How confident should I be in your results?"</li>
+    </ul>
+  </div>
+  <div class="cards-grid" style="margin-top:0.8rem">
+    <div class="checklist"><h3 style="color:var(--green)">BA/DA</h3><ul>
+      <li>"How did you decide what to put on the dashboard vs. leave out?"</li>
+      <li>"How did you handle conflicting data definitions across teams?"</li>
+      <li>"How would you set up monitoring for the KPIs you defined?"</li>
+    </ul></div>
+    <div class="checklist"><h3 style="color:var(--accent2)">DS</h3><ul>
+      <li>"How did you handle missing data / class imbalance?"</li>
+      <li>"How did you choose your evaluation metric?"</li>
+      <li>"How would this model work in production?"</li>
+    </ul></div>
+    <div class="checklist"><h3 style="color:var(--orange)">DE/MLE</h3><ul>
+      <li>"How do you handle late-arriving data?"</li>
+      <li>"What happens when a source schema changes?"</li>
+      <li>"How would you monitor pipeline health?"</li>
+    </ul></div>
+    <div class="checklist"><h3 style="color:var(--yellow)">AI/SWE</h3><ul>
+      <li>"How do you evaluate the quality of generated output?"</li>
+      <li>"What happens when the model hallucinates in production?"</li>
+      <li>"How would you handle versioning and rollbacks?"</li>
+    </ul></div>
+  </div>
+
+  <div class="commitment-box">
+    <h3>Three Personal Commitments</h3>
+    <p class="commitment-item">1. The ONE concept I need to study: ___</p>
+    <p class="commitment-item">2. The ONE follow-up I couldn't answer: ___</p>
+    <p class="commitment-item">3. My practice partner: ___</p>
+  </div>`;
+}
+
+// ============================================================
+// APP INIT
+// ============================================================
+
+function init() {
+  // Build nav
+  const nav = document.getElementById('nav');
+  nav.innerHTML = TABS.map(t => `<button class="nav-btn" data-tab="${t.id}">${t.label}</button>`).join('');
+
+  // Build tab content
+  const main = document.getElementById('main');
+  let tabsHTML = '';
+  TABS.forEach(t => {
+    let content = '';
+    switch(t.id) {
+      case 'home': content = buildHome(); break;
+      case 'universal': content = buildStreamTab('universal','Universal','tag-universal'); break;
+      case 'bada': content = buildStreamTab('bada','BA / DA','tag-bada'); break;
+      case 'ds': content = buildStreamTab('ds','Data Science','tag-ds'); break;
+      case 'demle': content = buildStreamTab('demle','DE / MLE','tag-demle'); break;
+      case 'swe': content = buildStreamTab('swe','SWE','tag-swe'); break;
+      case 'aiswe': content = buildStreamTab('aiswe','AI / SWE','tag-aiswe'); break;
+      case 'mock': content = buildMockInterviewsTab(); break;
+      case 'resources': content = buildResourcesTab(); break;
+    }
+    tabsHTML += `<div class="tab" id="tab-${t.id}">${content}</div>`;
+  });
+  main.innerHTML = tabsHTML;
+
+  // Tab switching
+  nav.addEventListener('click', e => {
+    if (!e.target.classList.contains('nav-btn')) return;
+    switchTab(e.target.dataset.tab);
+  });
+
+  // Category filters on mock tab
+  initCatFilters();
+
+  // Activate first tab
+  switchTab('home');
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.id === 'tab-' + id));
+  window.scrollTo(0, 0);
+}
+
+function toggleCard(el) {
+  const reveal = el.querySelector('.card-reveal');
+  reveal.classList.toggle('open');
+  el.classList.toggle('revealed');
+}
+
+function toggleAccordion(el) {
+  el.classList.toggle('open');
+}
+
+function initCatFilters() {
+  const container = document.getElementById('catFilters');
+  if (!container) return;
+  const cats = ['All','A','B','C','D','E'];
+  container.innerHTML = cats.map(c => `<button class="cat-filter-btn${c==='All'?' active':''}" data-cat="${c}">${c === 'All' ? 'All Categories' : MOCK_QUESTIONS[c]?.name || c}</button>`).join('');
+  container.addEventListener('click', e => {
+    if (!e.target.classList.contains('cat-filter-btn')) return;
+    container.querySelectorAll('.cat-filter-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    const cat = e.target.dataset.cat;
+    const qContainer = document.getElementById('mockQuestionsContainer');
+    if (cat === 'All') {
+      qContainer.innerHTML = renderMockQuestions(['A','B','C','D','E'], true);
+    } else {
+      qContainer.innerHTML = renderMockQuestions([cat], true);
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

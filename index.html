@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bridging the Gap — MDA Workshop 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#050508;--bg2:#0a0a0f;--bg3:#12121a;--bg-card:rgba(18,18,26,0.7);
+  --text:#fff;--text2:#9ca3af;--text3:#6b7280;
+  --blue:#3b82f6;--purple:#8b5cf6;--pink:#ec4899;--green:#10b981;--cyan:#06b6d4;--orange:#f97316;--red:#ef4444;--yellow:#fbbf24;
+  --glow-purple:rgba(139,92,246,0.4);--glow-pink:rgba(236,72,153,0.4);
+  --gradient:linear-gradient(135deg,var(--blue),var(--purple),var(--pink));
+  --gradient-text:linear-gradient(135deg,#fff 0%,#a78bfa 50%,#f472b6 100%);
+  --border:rgba(255,255,255,0.06);
+  --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6}
+
+/* SLIDES */
+.slides{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1)}
+.slide{min-width:100vw;width:100vw;height:100vh;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:4rem 3rem;flex-shrink:0;opacity:0.3;transition:opacity 0.4s ease;overflow-y:auto;overflow-x:hidden}
+.slide.active{opacity:1}
+.slide-content{max-width:1100px;width:100%;text-align:center;position:relative;z-index:2}
+
+/* PRESENTER CONTROLS */
+.controls{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:1rem;z-index:1000;background:rgba(10,10,15,0.9);backdrop-filter:blur(20px);padding:0.6rem 1.5rem;border-radius:100px;border:1px solid var(--border);box-shadow:0 4px 30px rgba(0,0,0,0.5)}
+.controls .bar{width:200px;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.controls .fill{height:100%;background:var(--gradient);width:0%;transition:width 0.3s ease}
+.controls .counter{font-size:0.85rem;color:var(--text2);font-weight:500;min-width:60px;text-align:center}
+.controls .btn{width:36px;height:36px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s ease;font-size:1rem}
+.controls .btn:hover{background:var(--purple);border-color:var(--purple)}
+
+/* TIMELINE */
+.timeline{position:fixed;left:1.5rem;top:50%;transform:translateY(-50%);z-index:1000;opacity:0.4;transition:opacity 0.3s}
+.timeline:hover{opacity:1}
+.timeline-track{position:absolute;left:50%;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.1);transform:translateX(-50%);border-radius:1px}
+.timeline-fill{position:absolute;top:0;left:0;width:100%;height:0%;background:linear-gradient(180deg,var(--purple),var(--pink));border-radius:1px;transition:height 0.5s cubic-bezier(0.4,0,0.2,1)}
+.timeline-nodes{display:flex;flex-direction:column;gap:1rem;position:relative}
+.t-node{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);cursor:pointer;transition:all 0.3s;position:relative;z-index:1}
+.t-node:hover{background:var(--purple);transform:scale(1.8)}
+.t-node.visited{background:var(--purple)}
+.t-node.active{background:var(--pink);transform:scale(2.2);box-shadow:0 0 10px var(--glow-pink)}
+
+/* TYPOGRAPHY */
+.hero-title{font-size:clamp(3.5rem,10vw,7rem);font-weight:900;letter-spacing:-0.04em;line-height:0.95;margin-bottom:1.5rem;background:var(--gradient-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(1.25rem,3vw,1.75rem);font-weight:400;color:var(--text2);max-width:700px;margin:0 auto 2rem}
+.hero-meta{font-size:1rem;color:var(--text3)}
+.section-badge{display:inline-block;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;padding:0.5rem 1rem;border-radius:100px;margin-bottom:1.5rem}
+.badge-intro{color:var(--purple);background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3)}
+.badge-exercise{color:var(--green);background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3)}
+.badge-framework{color:var(--cyan);background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3)}
+.badge-demo{color:var(--orange);background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3)}
+.badge-closing{color:var(--pink);background:rgba(236,72,153,0.1);border:1px solid rgba(236,72,153,0.3)}
+.badge-break{color:var(--yellow);background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3)}
+.s-title{font-size:clamp(2.5rem,6vw,4rem);font-weight:800;letter-spacing:-0.03em;line-height:1.1;margin-bottom:1rem}
+.s-sub{font-size:1.25rem;color:var(--text2);max-width:650px;margin:0 auto 2.5rem}
+
+/* GLOW BACKGROUNDS */
+.glow{position:absolute;width:600px;height:600px;border-radius:50%;filter:blur(120px);opacity:0.15;pointer-events:none;z-index:0}
+.glow-purple{background:radial-gradient(circle,var(--glow-purple),transparent 70%);top:30%;left:40%}
+.glow-pink{background:radial-gradient(circle,var(--glow-pink),transparent 70%);top:50%;right:20%}
+.glow-green{background:radial-gradient(circle,rgba(16,185,129,0.4),transparent 70%);top:40%;left:30%}
+.glow-cyan{background:radial-gradient(circle,rgba(6,182,212,0.4),transparent 70%);top:30%;left:50%}
+
+/* CARDS / GRIDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;text-align:left;margin-top:2rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;text-align:left;margin-top:2rem}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;text-align:left;margin-top:2rem}
+.card{padding:1.5rem;background:var(--bg-card);border:1px solid var(--border);border-radius:16px}
+.card h3{font-size:1.15rem;font-weight:700;margin-bottom:0.5rem}
+.card p{font-size:0.95rem;color:var(--text2);line-height:1.5}
+.card .icon{font-size:1.8rem;margin-bottom:0.75rem;display:block}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin-top:1.5rem;text-align:left}
+.tbl th{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple);padding:0.75rem 1rem;border-bottom:2px solid rgba(139,92,246,0.3)}
+.tbl td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);font-size:0.95rem;color:var(--text2)}
+.tbl td:first-child{color:var(--text);font-weight:600}
+
+/* COMPARISON */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem;text-align:left}
+.compare-bad{padding:2rem;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:16px}
+.compare-good{padding:2rem;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:16px}
+.compare-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.75rem}
+.compare-bad .compare-label{color:var(--red)}
+.compare-good .compare-label{color:var(--green)}
+.compare-text{font-size:1.05rem;line-height:1.6;font-style:italic;color:var(--text2)}
+
+/* BIG QUOTE */
+.big-quote{font-size:clamp(1.5rem,4vw,2.5rem);font-weight:700;line-height:1.3;max-width:800px;margin:0 auto;letter-spacing:-0.02em}
+.big-quote .highlight{background:var(--gradient-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* FLOW */
+.flow{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;margin:2rem 0}
+.flow-step{padding:0.8rem 1.5rem;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);border-radius:12px;font-weight:600;color:var(--purple)}
+.flow-arrow{font-size:1.5rem;color:var(--purple)}
+
+/* KEY SENTENCE */
+.key-box{background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(236,72,153,0.12));border:1px solid rgba(139,92,246,0.3);border-radius:16px;padding:2rem;margin:2rem auto;max-width:800px;font-size:1.4rem;font-weight:700;line-height:1.4}
+.key-box .kw{color:var(--purple)}
+
+/* TIMER SLIDE */
+.timer-display{font-size:clamp(5rem,15vw,10rem);font-weight:900;font-family:var(--mono);background:var(--gradient-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.02em}
+.timer-label{font-size:1.5rem;color:var(--text2);margin-top:1rem}
+.timer-sub{font-size:1rem;color:var(--text3);margin-top:0.5rem}
+.timer-btn{padding:0.75rem 2rem;background:var(--purple);border:none;border-radius:100px;color:#fff;font-size:1rem;font-weight:600;cursor:pointer;margin-top:1.5rem;transition:all 0.2s}
+.timer-btn:hover{background:var(--pink);transform:scale(1.05)}
+.timer-btn.running{background:var(--red)}
+
+/* STREAM TAGS */
+.stream-tags{display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;margin:1.5rem 0}
+.stream-tag{padding:0.4rem 1rem;border-radius:100px;font-size:0.8rem;font-weight:600;border:1px solid var(--border)}
+.tag-uni{color:var(--blue);border-color:rgba(59,130,246,0.4);background:rgba(59,130,246,0.08)}
+.tag-ba{color:var(--green);border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.08)}
+.tag-ds{color:var(--purple);border-color:rgba(139,92,246,0.4);background:rgba(139,92,246,0.08)}
+.tag-de{color:var(--orange);border-color:rgba(249,115,22,0.4);background:rgba(249,115,22,0.08)}
+.tag-swe{color:var(--red);border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.08)}
+.tag-ai{color:var(--yellow);border-color:rgba(251,191,36,0.4);background:rgba(251,191,36,0.08)}
+
+/* CHECKLIST */
+.checklist{text-align:left;max-width:700px;margin:1.5rem auto 0}
+.check-item{display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;font-size:1.05rem;color:var(--text2)}.check-item .num{flex-shrink:0}
+.check-item .num{color:var(--purple);font-weight:800;font-size:1.1rem;min-width:1.5rem}
+
+/* ROLES */
+.roles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem;text-align:center}
+.role-card{padding:1.25rem;background:var(--bg-card);border:1px solid var(--border);border-radius:12px}
+.role-card .role-emoji{font-size:2rem;margin-bottom:0.5rem}
+.role-card .role-name{font-weight:700;font-size:1rem;margin-bottom:0.25rem}
+.role-card .role-desc{font-size:0.85rem;color:var(--text2)}
+
+/* FOLLOW UP LIST */
+.fu-list{text-align:left;max-width:700px;margin:1.5rem auto 0}
+.fu-item{padding:0.75rem 1rem;margin-bottom:0.5rem;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;font-size:1rem;color:var(--text2);font-style:italic}
+
+/* COMMITMENTS */
+.commit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2rem;text-align:center}
+.commit-card{padding:2rem 1.5rem;background:var(--bg-card);border:2px dashed rgba(139,92,246,0.3);border-radius:16px}
+.commit-card .commit-num{font-size:2.5rem;font-weight:900;background:var(--gradient-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem}
+.commit-card .commit-text{font-size:1rem;color:var(--text2)}
+
+/* FINAL SLIDE */
+.final-quote{font-size:clamp(1.2rem,3vw,1.8rem);font-weight:500;line-height:1.6;max-width:800px;margin:0 auto 2rem;color:var(--text2)}
+.final-quote em{font-style:normal;color:var(--text);font-weight:700}
+
+/* PARTICLES */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* MOCK INTERVIEW */
+.mock-msg{display:flex;gap:12px;align-items:flex-start;opacity:0;transform:translateY(10px);transition:opacity 0.4s ease,transform 0.4s ease}
+.mock-msg.show{opacity:1;transform:translateY(0)}
+.mock-msg.dim{opacity:0.2;transition:opacity 0.5s ease}
+.mock-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px}
+.mock-avatar.iv{background:rgba(59,130,246,0.15);color:var(--blue)}
+.mock-avatar.ca{background:rgba(249,115,22,0.15);color:var(--orange)}
+.mock-speaker{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px}
+.mock-speaker.iv{color:var(--blue)}
+.mock-speaker.ca{color:var(--orange)}
+.mock-bubble{font-size:1rem;line-height:1.55;color:var(--text2)}
+.mock-annotation{display:flex;gap:12px;align-items:flex-start;opacity:0;transform:translateY(10px);transition:opacity 0.4s ease,transform 0.4s ease;margin-top:4px}
+.mock-annotation.show{opacity:1;transform:translateY(0)}
+.mock-ann-text{font-size:0.88rem;line-height:1.5;padding:10px 14px;border-radius:10px;flex:1}
+.mock-ann-text.warn{background:rgba(251,191,36,0.06);border-left:3px solid var(--yellow);color:#c9b44a}
+.mock-ann-text.bad{background:rgba(239,68,68,0.06);border-left:3px solid var(--red);color:#d06060}
+.mock-ann-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.mock-ann-dot.warn{background:rgba(251,191,36,0.1);color:var(--yellow)}
+.mock-ann-dot.bad{background:rgba(239,68,68,0.1);color:var(--red)}
+.mock-ann-dot.good{background:rgba(16,185,129,0.1);color:var(--green)}
+.mock-ann-text.good{background:rgba(16,185,129,0.06);border-left:3px solid var(--green);color:#55c070}
+
+@media(max-width:900px){
+  .grid-2,.grid-3,.grid-4,.compare,.roles-grid,.commit-grid{grid-template-columns:1fr}
+  .slide{padding:2rem 1.5rem}
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="slides" id="slides">
+
+<!-- SLIDE 1: SILENT OPENER (on screen as students arrive) -->
+<section class="slide" id="s-opener">
+  <div class="glow glow-purple"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-intro">Before we start</div>
+    <h2 class="s-title" style="font-size:clamp(2rem,5vw,3rem)">Grab a pen. Answer these.<br><span style="color:var(--text3);font-weight:400;font-size:0.6em">Just for you. No one sees this.</span></h2>
+    <div class="checklist" style="margin-top:2rem">
+      <div class="check-item"><span class="num">1.</span> Which stream are you targeting?</div>
+      <div class="stream-tags" style="padding-left:2.25rem">
+        <span class="stream-tag tag-ba">BA / DA</span>
+        <span class="stream-tag tag-ds">Data Science</span>
+        <span class="stream-tag tag-de">DE / MLE</span>
+        <span class="stream-tag tag-swe">SWE</span>
+        <span class="stream-tag tag-ai">AI / SWE</span>
+        <span class="stream-tag" style="color:var(--text3);border-color:rgba(255,255,255,0.15)">Not sure yet</span>
+      </div>
+      <div class="check-item"><span class="num">2.</span> Think of the last technical question that made you uncomfortable.</div>
+      <div class="check-item"><span class="num">3.</span> <span>Scale of 1-5: how confident are you that you could explain your best project — not what tools you used, but <strong style="color:var(--text)">WHY</strong> you made the decisions you did?</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 2: TITLE -->
+<section class="slide" id="s-title">
+  <div class="glow glow-purple"></div>
+  <div class="glow glow-pink"></div>
+  <div class="slide-content">
+    <h1 class="hero-title">Bridging<br>the Gap</h1>
+    <p class="hero-sub">From Knowing to Showing in Technical Interviews</p>
+    <p class="hero-meta">Ravin Lathigra &bull; MDA Alumnus &bull; Senior Data Developer @ Shopify</p>
+    <p class="hero-meta" style="margin-top:0.5rem;color:var(--text3)">February 23, 2026 &bull; NCB284 &bull; Western University</p>
+  </div>
+</section>
+
+<!-- SLIDE 3: TONIGHT'S FORMAT -->
+<section class="slide" id="s-format">
+  <div class="slide-content">
+    <div class="section-badge badge-intro">Tonight's Format</div>
+    <h2 class="s-title">I talk ~30 min.<br>You work in triads ~75 min.</h2>
+    <p class="s-sub">You will not be asked to speak in front of the room. You will think, write, explain, and listen — in groups of 3.</p>
+    <div class="grid-3" style="max-width:800px;margin:2rem auto 0">
+      <div class="card" style="text-align:center"><span class="icon">🤔</span><h3>Think</h3><p>Silent writing first. Always.</p></div>
+      <div class="card" style="text-align:center"><span class="icon">🗣️</span><h3>Explain</h3><p>To 2 people. Not 30.</p></div>
+      <div class="card" style="text-align:center"><span class="icon">👂</span><h3>Listen</h3><p>Feedback that's specific & kind.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: WHAT INTERVIEWERS EVALUATE -->
+<section class="slide" id="s-evaluate">
+  <div class="glow glow-purple"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-intro">The Other Side of the Table</div>
+    <h2 class="s-title">What Interviewers<br>Actually Evaluate</h2>
+    <table class="tbl" style="max-width:800px;margin:2rem auto 0">
+      <thead><tr><th>What you think they want</th><th>What they actually evaluate</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--text3)">Right answers</td><td>Clear reasoning out loud</td></tr>
+        <tr><td style="color:var(--text3)">Tool knowledge</td><td>Tradeoff awareness</td></tr>
+        <tr><td style="color:var(--text3)">Impressive projects</td><td>Honest self-reflection</td></tr>
+        <tr><td style="color:var(--text3)">Confidence</td><td>Thinking through uncertainty</td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--text3);margin-top:1.5rem;font-size:0.95rem">True whether you're interviewing for an analyst role or an ML engineer role.</p>
+  </div>
+</section>
+
+<!-- SLIDE 5: WHY LADDER -->
+<section class="slide" id="s-why-ladder">
+  <div class="glow glow-cyan"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-framework">Framework</div>
+    <h2 class="s-title">The "Why" Ladder</h2>
+    <p class="s-sub">Every answer should survive 3 levels of "why."</p>
+    <div style="text-align:left;max-width:800px;margin:0 auto">
+      <div class="card" style="margin-bottom:0.75rem;border-color:rgba(239,68,68,0.2)">
+        <p style="color:var(--red);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem">Level 1 — What</p>
+        <p style="font-size:1.15rem;color:var(--text3)">"I used Random Forest."</p>
+      </div>
+      <div class="card" style="margin-bottom:0.75rem;border-color:rgba(249,115,22,0.2)">
+        <p style="color:var(--orange);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem">Level 2 — How</p>
+        <p style="font-size:1.15rem;color:var(--text2)">"It handles non-linear relationships using bagging."</p>
+      </div>
+      <div class="card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.05)">
+        <p style="color:var(--green);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem">Level 3 — Why ✓</p>
+        <p style="font-size:1.15rem;color:var(--text)">"My features had complex interactions. With 50K rows, bagging reduces variance without overfitting. And I needed feature importances for my non-technical stakeholder."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: LIVE DEMO INTRO -->
+<section class="slide" id="s-demo-intro">
+  <div class="glow glow-pink"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-demo">Live Demo</div>
+    <h2 class="s-title">Same Question.<br>Two Answers.</h2>
+    <p class="s-sub" style="font-size:1.4rem;font-style:italic;color:var(--text3)">"You built a model that detects fraud. Should you optimize for precision or recall?"</p>
+  </div>
+</section>
+
+<!-- SLIDE 7: BAD vs GOOD -->
+<section class="slide" id="s-demo-compare">
+  <div class="slide-content">
+    <div class="compare">
+      <div class="compare-bad">
+        <div class="compare-label">❌ Technically correct. Won't get the job.</div>
+        <p class="compare-text">"Precision is true positives over true positives plus false positives. Recall is true positives over true positives plus false negatives. For fraud, you'd want high recall."</p>
+        <p style="color:var(--red);margin-top:1rem;font-size:0.9rem">→ Gave a definition when asked to reason.</p>
+      </div>
+      <div class="compare-good">
+        <div class="compare-label">✓ Shows reasoning, tradeoffs, business awareness</div>
+        <p class="compare-text">"The question is really about what type of mistake hurts more. A missed fraud: thousands lost, trust destroyed. A false alarm: customer gets a 'was this you?' text — annoying but not catastrophic. So I'd lean recall. BUT — at 10M transactions/day, high recall could mean 100K false alarms. I'd find the threshold where recall is high but volume is operationally manageable."</p>
+        <p style="color:var(--green);margin-top:1rem;font-size:0.9rem">→ Reasoning + real-world tradeoffs + honesty about limits.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: MOCK INTERVIEW — RECIPE FOLLOWER -->
+<section class="slide" id="s-mock-pvalue">
+  <div class="glow glow-pink"></div>
+  <div class="slide-content" style="max-width:900px">
+    <div class="section-badge badge-demo">Live Example</div>
+    <h2 class="s-title" style="font-size:clamp(1.8rem,4vw,2.5rem);margin-bottom:0.5rem">The Recipe Follower</h2>
+    <p style="color:var(--text3);font-size:0.9rem;margin-bottom:1.5rem">Click through a realistic interview. Watch for the gap between "correct" and "good."</p>
+
+    <div id="mock-conversation" style="text-align:left;min-height:340px;display:flex;flex-direction:column;gap:12px">
+      <!-- Messages injected by JS -->
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.5rem">
+      <button class="timer-btn" id="mock-back-btn" onclick="mockBack()" style="background:var(--bg3);font-size:0.85rem;padding:0.5rem 1.25rem">Back</button>
+      <span id="mock-step-counter" style="font-size:0.8rem;color:var(--text3);min-width:60px;text-align:center"></span>
+      <button class="timer-btn" id="mock-next-btn" onclick="mockAdvance()" style="font-size:0.85rem;padding:0.5rem 1.25rem">Start</button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9: MOCK INTERVIEW — GREAT ANSWER (ETL) -->
+<section class="slide" id="s-mock-etl">
+  <div class="glow glow-green"></div>
+  <div class="slide-content" style="max-width:900px">
+    <div class="section-badge badge-demo">Live Example</div>
+    <h2 class="s-title" style="font-size:clamp(1.8rem,4vw,2.5rem);margin-bottom:0.5rem">The Chef</h2>
+    <p style="color:var(--text3);font-size:0.9rem;margin-bottom:1.5rem">Same format. Watch how reasoning, tradeoffs, and honesty change everything.</p>
+
+    <div id="etl-conversation" style="text-align:left;min-height:340px;display:flex;flex-direction:column;gap:12px">
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.5rem">
+      <button class="timer-btn" id="etl-back-btn" onclick="etlBack()" style="background:var(--bg3);font-size:0.85rem;padding:0.5rem 1.25rem">Back</button>
+      <span id="etl-step-counter" style="font-size:0.8rem;color:var(--text3);min-width:60px;text-align:center"></span>
+      <button class="timer-btn" id="etl-next-btn" onclick="etlAdvance()" style="font-size:0.85rem;padding:0.5rem 1.25rem">Start</button>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10: THE GENAI NOTE -->
+<section class="slide" id="s-genai">
+  <div class="slide-content">
+    <div class="big-quote">"If an AI wrote your code and you can't explain the decisions in that code, the interviewer will find that gap in <span class="highlight">about 90 seconds.</span>"</div>
+    <p style="color:var(--text3);margin-top:2rem;font-size:1rem">Tonight we practice the thing no tool can do for you: explaining your reasoning with your own voice.</p>
+  </div>
+</section>
+
+<!-- SLIDE 9: FORM TRIADS -->
+<section class="slide" id="s-triads">
+  <div class="glow glow-green"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-exercise">Form Groups</div>
+    <h2 class="s-title">Find 2 People</h2>
+    <p class="s-sub">Ideally people you don't know well.<br>You'll be in this group for the rest of the night.</p>
+    <div class="roles-grid" style="max-width:600px;margin:2rem auto 0">
+      <div class="role-card"><div class="role-emoji">🎤</div><div class="role-name">Explainer</div><div class="role-desc">Explains the concept</div></div>
+      <div class="role-card"><div class="role-emoji">🎯</div><div class="role-name">Listener</div><div class="role-desc">Asks the follow-up</div></div>
+      <div class="role-card"><div class="role-emoji">👁️</div><div class="role-name">Observer</div><div class="role-desc">Gives honest feedback</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10: WARM-UP -->
+<section class="slide" id="s-warmup">
+  <div class="slide-content">
+    <div class="section-badge badge-exercise">Warm-Up</div>
+    <h2 class="s-title">30 Seconds Each</h2>
+    <div class="key-box" style="font-size:1.2rem;font-weight:500">
+      "I'm <span class="kw">[name]</span>, I'm targeting <span class="kw">[stream]</span> roles, and the project I'll probably discuss in interviews is <span class="kw">[one sentence]</span>."
+    </div>
+    <p style="color:var(--text3);margin-top:1rem">90 seconds total for all three. Then chat for a couple minutes.</p>
+  </div>
+</section>
+
+<!-- SLIDE 11: EXERCISE 1 TITLE -->
+<section class="slide" id="s-ex1-title">
+  <div class="glow glow-green"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-exercise">Exercise 1</div>
+    <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">The<br>Explanation Lab</h2>
+    <p class="s-sub">Practice explaining technical concepts out loud — to just 2 people.</p>
+  </div>
+</section>
+
+<!-- SLIDE 12: EXPLANATION PATTERN -->
+<section class="slide" id="s-explain-pattern">
+  <div class="slide-content">
+    <div class="section-badge badge-framework">Framework</div>
+    <h2 class="s-title">The Explanation Pattern</h2>
+    <div class="grid-4" style="max-width:1000px;margin:2rem auto 0">
+      <div class="card" style="text-align:center;border-color:rgba(59,130,246,0.3)"><span class="icon" style="color:var(--blue)">1</span><h3>Plain Language</h3><p>One sentence, no jargon</p></div>
+      <div class="card" style="text-align:center;border-color:rgba(139,92,246,0.3)"><span class="icon" style="color:var(--purple)">2</span><h3>Intuition</h3><p>Why does it exist? Why does it matter?</p></div>
+      <div class="card" style="text-align:center;border-color:rgba(16,185,129,0.3)"><span class="icon" style="color:var(--green)">3</span><h3>Real Example</h3><p>Concrete scenario with stakes</p></div>
+      <div class="card" style="text-align:center;border-color:rgba(249,115,22,0.3)"><span class="icon" style="color:var(--orange)">4</span><h3>Limits</h3><p>Tradeoffs, when it breaks</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 13: HOW IT WORKS -->
+<section class="slide" id="s-ex1-how">
+  <div class="slide-content">
+    <h2 class="s-title">How It Works</h2>
+    <div class="flow">
+      <div class="flow-step">🤔 Think 45s</div><span class="flow-arrow">→</span>
+      <div class="flow-step">🗣️ Explain 60s</div><span class="flow-arrow">→</span>
+      <div class="flow-step">🎯 Follow-up 45s</div><span class="flow-arrow">→</span>
+      <div class="flow-step">👁️ Feedback 30s</div>
+    </div>
+    <p style="color:var(--text2);font-size:1.1rem;margin-top:1rem">3 rounds. Everyone explains once. Pick a question matching your stream from the shared file.</p>
+    <div class="stream-tags" style="margin-top:1.5rem">
+      <span class="stream-tag tag-uni">Universal</span>
+      <span class="stream-tag tag-ba">BA / DA</span>
+      <span class="stream-tag tag-ds">Data Science</span>
+      <span class="stream-tag tag-de">DE / MLE</span>
+      <span class="stream-tag tag-swe">SWE</span>
+      <span class="stream-tag tag-ai">AI / SWE</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 14: TIMER - THINK -->
+<section class="slide timer-slide" id="s-timer-think">
+  <div class="glow glow-purple"></div>
+  <div class="slide-content">
+    <div class="timer-display" id="timer-think-display">0:45</div>
+    <div class="timer-label">Think</div>
+    <div class="timer-sub">Read your question. Organize your thoughts.</div>
+    <button class="timer-btn" onclick="toggleTimer('think',45)">Start Timer</button>
+  </div>
+</section>
+
+<!-- SLIDE 15: TIMER - EXPLAIN -->
+<section class="slide timer-slide" id="s-timer-explain">
+  <div class="glow glow-green"></div>
+  <div class="slide-content">
+    <div class="timer-display" id="timer-explain-display">1:00</div>
+    <div class="timer-label">Explain</div>
+    <div class="timer-sub">Clarity, not perfection.</div>
+    <button class="timer-btn" onclick="toggleTimer('explain',60)">Start Timer</button>
+  </div>
+</section>
+
+<!-- SLIDE 16: TIMER - FOLLOW-UP -->
+<section class="slide timer-slide" id="s-timer-followup">
+  <div class="glow glow-cyan"></div>
+  <div class="slide-content">
+    <div class="timer-display" id="timer-followup-display">0:45</div>
+    <div class="timer-label">Follow-up + Response</div>
+    <div class="timer-sub">Listener asks the follow-up question.</div>
+    <button class="timer-btn" onclick="toggleTimer('followup',45)">Start Timer</button>
+  </div>
+</section>
+
+<!-- SLIDE 17: TIMER - FEEDBACK -->
+<section class="slide timer-slide" id="s-timer-feedback">
+  <div class="slide-content">
+    <div class="timer-display" id="timer-feedback-display">0:30</div>
+    <div class="timer-label">Observer Feedback</div>
+    <div class="timer-sub">"Could I explain this concept to someone else based on what I just heard?"</div>
+    <button class="timer-btn" onclick="toggleTimer('feedback',30)">Start Timer</button>
+  </div>
+</section>
+
+<!-- SLIDE 18: ROTATE -->
+<section class="slide" id="s-rotate1">
+  <div class="slide-content">
+    <h2 class="hero-title" style="font-size:clamp(3rem,9vw,6rem)">Rotate!</h2>
+    <p class="s-sub">Next person explains. New question.</p>
+    <p style="color:var(--text3)">Use the same timer slides — arrow back to "Think" when ready.</p>
+  </div>
+</section>
+
+<!-- SLIDE 19: BREAK -->
+<section class="slide" id="s-break">
+  <div class="slide-content">
+    <div class="section-badge badge-break">5 Minutes</div>
+    <h2 class="hero-title" style="font-size:clamp(3rem,9vw,5rem)">Break</h2>
+    <p class="s-sub">Stretch. Swap triads if levels felt mismatched.</p>
+  </div>
+</section>
+
+<!-- SLIDE 20: EXERCISE 2 TITLE -->
+<section class="slide" id="s-ex2-title">
+  <div class="glow glow-purple"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-exercise">Exercise 2</div>
+    <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">Own Your<br>Project</h2>
+    <p class="s-sub">Write and rehearse an interview-ready project pitch. Then stress-test it.</p>
+  </div>
+</section>
+
+<!-- SLIDE 21: STAR-T -->
+<section class="slide" id="s-start">
+  <div class="glow glow-cyan"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-framework">Framework</div>
+    <h2 class="s-title">STAR-T Checklist</h2>
+    <p class="s-sub">A checklist, not a script. Works for every stream.</p>
+    <table class="tbl" style="max-width:800px;margin:1.5rem auto 0">
+      <thead><tr><th></th><th>Stands For</th><th>What to Say</th></tr></thead>
+      <tbody>
+        <tr><td style="font-size:1.3rem;color:var(--purple)">S</td><td>Situation</td><td>What was the problem? Who cared?</td></tr>
+        <tr><td style="font-size:1.3rem;color:var(--purple)">T</td><td>Task</td><td>What was YOUR specific role? Constraints?</td></tr>
+        <tr><td style="font-size:1.3rem;color:var(--green)">A</td><td>Approach</td><td>What did you do, <strong>WHY</strong>, and what else did you consider?</td></tr>
+        <tr><td style="font-size:1.3rem;color:var(--purple)">R</td><td>Results</td><td>What happened? Numbers. Honest assessment.</td></tr>
+        <tr><td style="font-size:1.3rem;color:var(--purple)">T</td><td>Takeaways</td><td>What would you change? Limitations?</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SLIDE 22: THE KEY SENTENCE -->
+<section class="slide" id="s-key-sentence">
+  <div class="glow glow-purple"></div>
+  <div class="glow glow-pink"></div>
+  <div class="slide-content">
+    <h2 class="s-title" style="margin-bottom:2rem">The Sentence That Changes Everything</h2>
+    <div class="key-box" style="font-size:clamp(1.2rem,3vw,1.8rem)">
+      "I chose X <span class="kw">because</span> Y, and I considered Z <span class="kw">but</span> it didn't fit because..."
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 23: WHY ACROSS STREAMS -->
+<section class="slide" id="s-why-streams">
+  <div class="slide-content">
+    <h2 class="s-title">The "Why" Across Streams</h2>
+    <div style="text-align:left;max-width:850px;margin:1.5rem auto 0">
+      <div class="card" style="margin-bottom:0.75rem"><p><span style="color:var(--green);font-weight:700">BA/DA:</span> "I chose a waterfall chart over a stacked bar because the stakeholder needed to see sequential impact on revenue."</p></div>
+      <div class="card" style="margin-bottom:0.75rem"><p><span style="color:var(--purple);font-weight:700">DS:</span> "I chose XGBoost over logistic regression because feature interactions were non-linear. I considered a neural net but the dataset was too small."</p></div>
+      <div class="card" style="margin-bottom:0.75rem"><p><span style="color:var(--orange);font-weight:700">DE/MLE:</span> "I designed incremental ELT rather than full-refresh ETL because the table was 500M rows and full refreshes hit our 2-hour SLA."</p></div>
+      <div class="card"><p><span style="color:var(--yellow);font-weight:700">AI/SWE:</span> "I used RAG over fine-tuning because the knowledge base changes weekly and fine-tuning would require constant retraining."</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 24: SOLO WRITING -->
+<section class="slide timer-slide" id="s-solo-write">
+  <div class="glow glow-purple"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-exercise">Solo Writing</div>
+    <div class="timer-display" id="timer-write-display">5:00</div>
+    <div class="timer-label">Write Your STAR-T Bullets</div>
+    <div class="timer-sub">Focus on Approach: "I chose ___ because ___. I considered ___ but ___."</div>
+    <button class="timer-btn" onclick="toggleTimer('write',300)">Start Timer</button>
+  </div>
+</section>
+
+<!-- SLIDE 25: TRIAD PITCHES -->
+<section class="slide" id="s-triad-pitch">
+  <div class="slide-content">
+    <h2 class="s-title">Triad Pitches</h2>
+    <p class="s-sub">7 min per person: 2 min pitch + 3 min follow-ups + 2 min feedback</p>
+    <div class="fu-list">
+      <div class="fu-item">"Why that approach and not [alternative]?"</div>
+      <div class="fu-item">"What would happen if the data changed?"</div>
+      <div class="fu-item">"How do you know that metric was good enough?"</div>
+      <div class="fu-item">"What was the biggest limitation?"</div>
+      <div class="fu-item">"How would this work at scale / in production?"</div>
+      <div class="fu-item">"How did you communicate results to stakeholders?"</div>
+    </div>
+    <p style="color:var(--green);margin-top:1.5rem;font-size:1.05rem;font-weight:600">Can't answer a follow-up? Write it down. That's your study list.</p>
+  </div>
+</section>
+
+<!-- SLIDE 26: PITCH TIMER -->
+<section class="slide timer-slide" id="s-timer-pitch">
+  <div class="glow glow-green"></div>
+  <div class="slide-content">
+    <div class="timer-display" id="timer-pitch-display">7:00</div>
+    <div class="timer-label">Pitch Round</div>
+    <div class="timer-sub">2 min pitch → 3 min follow-ups → 2 min feedback</div>
+    <button class="timer-btn" onclick="toggleTimer('pitch',420)">Start Timer</button>
+  </div>
+</section>
+
+<!-- SLIDE 27: EXERCISE 3 TITLE -->
+<section class="slide" id="s-ex3-title">
+  <div class="glow glow-pink"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-exercise">Exercise 3</div>
+    <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">The Real<br>Thing</h2>
+    <p class="s-sub">Full mock interview simulation. One round each. As close to real as possible.</p>
+  </div>
+</section>
+
+<!-- SLIDE 28: MOCK SETUP -->
+<section class="slide" id="s-mock-setup">
+  <div class="slide-content">
+    <h2 class="s-title">Choose Questions by Stream</h2>
+    <table class="tbl" style="max-width:700px;margin:1.5rem auto 0">
+      <thead><tr><th>Your Target</th><th>Pull From</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--green)">BA / DA</td><td>Category A, C, or E</td></tr>
+        <tr><td style="color:var(--purple)">Data Science</td><td>Category A, B, or C</td></tr>
+        <tr><td style="color:var(--orange)">DE / MLE</td><td>Category B, D, or E</td></tr>
+        <tr><td style="color:var(--red)">SWE</td><td>Category D or E</td></tr>
+        <tr><td style="color:var(--yellow)">AI / SWE</td><td>Category B, C, or D</td></tr>
+        <tr><td style="color:var(--text3)">Not sure</td><td>Category A or C</td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--text2);margin-top:1.5rem;font-size:0.95rem"><strong>Interviewer:</strong> pick for your CANDIDATE's stream, not yours.<br><strong>Candidate:</strong> pausing is OK. Clarifying questions are impressive.<br><strong>Observer:</strong> silent during. 90 sec of specific feedback after.</p>
+  </div>
+</section>
+
+<!-- SLIDE 29: MOCK TIMER -->
+<section class="slide timer-slide" id="s-timer-mock">
+  <div class="glow glow-pink"></div>
+  <div class="slide-content">
+    <div class="timer-display" id="timer-mock-display">6:00</div>
+    <div class="timer-label">Mock Interview Round</div>
+    <div class="timer-sub">Question → Answer (2 min) → Follow-up (1.5 min) → Feedback (90s)</div>
+    <button class="timer-btn" onclick="toggleTimer('mock',360)">Start Timer</button>
+  </div>
+</section>
+
+<!-- SLIDE 30: CLOSING TITLE -->
+<section class="slide" id="s-closing-title">
+  <div class="glow glow-purple"></div>
+  <div class="glow glow-pink"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-closing">Closing</div>
+    <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">What Changes<br>Tomorrow</h2>
+  </div>
+</section>
+
+<!-- SLIDE 31: DURING THE INTERVIEW -->
+<section class="slide" id="s-interview-tips">
+  <div class="slide-content">
+    <h2 class="s-title">During the Interview</h2>
+    <div class="checklist">
+      <div class="check-item"><span class="num" style="color:var(--green)">→</span> <strong style="color:var(--text)">Pause for 5 seconds to think.</strong> Interviewers respect it.</div>
+      <div class="check-item"><span class="num" style="color:var(--green)">→</span> "I'm not certain, but here's how I'd reason about it..." is a <strong style="color:var(--text)">great</strong> answer.</div>
+      <div class="check-item"><span class="num" style="color:var(--green)">→</span> Asking a clarifying question shows you <strong style="color:var(--text)">think before you act.</strong></div>
+      <div class="check-item"><span class="num" style="color:var(--red)">✕</span> "I don't know" + silence is NOT OK. Always offer your thinking process.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 32: THREE COMMITMENTS -->
+<section class="slide" id="s-commitments">
+  <div class="slide-content">
+    <h2 class="s-title">Your Three Things</h2>
+    <p class="s-sub">Open your notes app. Write these down.</p>
+    <div class="commit-grid">
+      <div class="commit-card"><div class="commit-num">1</div><div class="commit-text">The ONE concept I need to study before my next interview.</div></div>
+      <div class="commit-card"><div class="commit-num">2</div><div class="commit-text">The ONE follow-up question I couldn't answer tonight.</div></div>
+      <div class="commit-card"><div class="commit-num">3</div><div class="commit-text">ONE person from my triad I'll practice with.</div></div>
+    </div>
+    <p style="color:var(--text3);margin-top:1.5rem;font-size:0.95rem">Look at your triad. Exchange contact info. That practice session is the highest-ROI thing you can do.</p>
+  </div>
+</section>
+
+<!-- SLIDE 33: STAY CONNECTED -->
+<section class="slide" id="s-connected">
+  <div class="slide-content">
+    <div class="section-badge badge-closing">Resources</div>
+    <h2 class="s-title">Stay Connected</h2>
+    <p class="s-sub">I'll share the slides file with everything from tonight — exercises, mock interviews, frameworks, and question banks. It's all in one place.</p>
+    <div class="grid-2" style="max-width:600px;margin:2rem auto 0;text-align:center">
+      <div class="card"><h3>Exercise Questions</h3><p>All streams, with follow-ups</p></div>
+      <div class="card"><h3>Mock Interviews</h3><p>Click-through examples with annotations</p></div>
+      <div class="card"><h3>Frameworks</h3><p>STAR-T, Why Ladder, Explanation Pattern</p></div>
+      <div class="card"><h3>Question Bank</h3><p>Full bank by stream and category</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 34: FINAL -->
+<section class="slide" id="s-final">
+  <div class="glow glow-purple"></div>
+  <div class="glow glow-pink"></div>
+  <div class="slide-content">
+    <p class="final-quote">"You came in tonight knowing this material. You're leaving knowing how to <em>say it.</em> That's a different skill — the same skill whether you're heading into an analyst interview or an ML engineer interview. The gap is smaller than it was at 5:30. <em>One rep at a time.</em>"</p>
+    <p style="font-size:1.2rem;font-weight:600;margin-top:1rem">Ravin Lathigra</p>
+    <p style="color:var(--text3);font-size:0.95rem">rlathigra@gmail.com</p>
+  </div>
+</section>
+
+</div><!-- /slides -->
+
+<!-- PRESENTER CONTROLS -->
+<div class="controls">
+  <button class="btn" onclick="prevSlide()">◀</button>
+  <span class="counter" id="counter">1 / 36</span>
+  <div class="bar"><div class="fill" id="progressFill"></div></div>
+  <button class="btn" onclick="nextSlide()">▶</button>
+</div>
+
+<!-- TIMELINE -->
+<div class="timeline" id="timeline"></div>
+
+<script>
+// ========== SLIDE NAVIGATION ==========
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0;
+
+function updateSlide(idx) {
+  if (idx < 0 || idx >= total) return;
+  current = idx;
+  document.getElementById('slides').style.transform = `translateX(-${current * 100}vw)`;
+  slides.forEach((s, i) => s.classList.toggle('active', i === current));
+  document.getElementById('counter').textContent = `${current + 1} / ${total}`;
+  document.getElementById('progressFill').style.width = `${((current + 1) / total) * 100}%`;
+  // Update timeline
+  document.querySelectorAll('.t-node').forEach((n, i) => {
+    n.classList.toggle('active', i === current);
+    if (i <= current) n.classList.add('visited');
+  });
+  const fill = document.querySelector('.timeline-fill');
+  if (fill) fill.style.height = `${(current / (total - 1)) * 100}%`;
+}
+
+function nextSlide() { updateSlide(current + 1); }
+function prevSlide() { updateSlide(current - 1); }
+
+document.addEventListener('keydown', e => {
+  // On mock interview slides, route keys to the interview stepper instead
+  const activeSlide = slides[current];
+  const isMockPvalue = activeSlide && activeSlide.id === 's-mock-pvalue';
+  const isMockEtl = activeSlide && activeSlide.id === 's-mock-etl';
+
+  if (e.key === 'ArrowRight' || e.key === ' ') {
+    e.preventDefault();
+    if (isMockPvalue) { mockAdvance(); }
+    else if (isMockEtl) { etlAdvance(); }
+    else { nextSlide(); }
+  } else if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    if (isMockPvalue && mockStep > 0) { mockBack(); }
+    else if (isMockEtl && etlStep > 0) { etlBack(); }
+    else { prevSlide(); }
+  }
+});
+
+// Build timeline
+const tl = document.getElementById('timeline');
+let nodesHTML = '<div class="timeline-track"><div class="timeline-fill"></div></div><div class="timeline-nodes">';
+for (let i = 0; i < total; i++) {
+  nodesHTML += `<div class="t-node" onclick="updateSlide(${i})"></div>`;
+}
+nodesHTML += '</div>';
+tl.innerHTML = nodesHTML;
+
+// Init
+updateSlide(0);
+
+// ========== TIMERS ==========
+const timers = {};
+
+function toggleTimer(name, totalSec) {
+  const display = document.getElementById(`timer-${name}-display`);
+  const btn = event.target;
+
+  if (timers[name]) {
+    // Stop
+    clearInterval(timers[name].interval);
+    delete timers[name];
+    btn.textContent = 'Start Timer';
+    btn.classList.remove('running');
+    display.textContent = formatTime(totalSec);
+    return;
+  }
+
+  // Start
+  let remaining = totalSec;
+  btn.textContent = 'Stop';
+  btn.classList.add('running');
+  display.textContent = formatTime(remaining);
+
+  timers[name] = {
+    interval: setInterval(() => {
+      remaining--;
+      display.textContent = formatTime(remaining);
+      if (remaining <= 0) {
+        clearInterval(timers[name].interval);
+        delete timers[name];
+        btn.textContent = 'Start Timer';
+        btn.classList.remove('running');
+        display.textContent = "0:00";
+        display.style.color = 'var(--red)';
+        setTimeout(() => { display.style.color = ''; display.textContent = formatTime(totalSec); }, 3000);
+      }
+    }, 1000)
+  };
+}
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${sec.toString().padStart(2, '0')}`;
+}
+
+// ========== PARTICLES ==========
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+for (let i = 0; i < 50; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: (Math.random() - 0.5) * 0.3,
+    r: Math.random() * 1.5 + 0.5,
+    a: Math.random() * 0.3 + 0.1
+  });
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+    if (p.y < 0) p.y = canvas.height;
+    if (p.y > canvas.height) p.y = 0;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(139, 92, 246, ${p.a})`;
+    ctx.fill();
+  });
+  // Draw lines between nearby particles
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 150) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(139, 92, 246, ${0.05 * (1 - dist / 150)})`;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// ========== MOCK INTERVIEW ==========
+const mockSteps = [
+  {
+    messages: [
+      { speaker:'iv', text:'Can you explain what a p-value is?' }
+    ]
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'Can you explain what a p-value is?' },
+      { speaker:'ca', text:'Sure \u2014 a p-value tells you the probability that your result happened by chance. So if you get a p-value of 0.03, there\u2019s a 3% chance the result is just random noise.' }
+    ],
+    annotation: { type:'warn', text:'Sounds reasonable, and many people say this \u2014 but it\u2019s subtly wrong. A p-value is the probability of seeing data this extreme <em>assuming the null is true</em>. It\u2019s not "the probability it happened by chance."' }
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'What would you do if you ran an A/B test and got a p-value of 0.04?' }
+    ]
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'What would you do if you ran an A/B test and got a p-value of 0.04?' },
+      { speaker:'ca', text:'That\u2019s below our 0.05 threshold, so we\u2019d have a statistically significant result. I\u2019d recommend we ship the winning variant.' }
+    ],
+    annotation: { type:'warn', text:'The textbook procedure is correct. But notice \u2014 they haven\u2019t asked about the <em>size</em> of the effect. The recipe says "if p < 0.05, ship it."' }
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'What if I told you the conversion rate improved by 0.01%?' }
+    ]
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'What if I told you the conversion rate improved by 0.01%?' },
+      { speaker:'ca', text:'Well\u2026 the test says it\u2019s a real difference. With enough traffic the stats should be reliable. I\u2019d still lean towards shipping \u2014 we ran the test properly and it passed.' }
+    ],
+    annotation: { type:'bad', text:'This is the core problem. A 0.01% lift might be statistically real but it\u2019s practically meaningless \u2014 the engineering cost of shipping likely outweighs the gain. <strong>Statistical significance \u2260 business significance.</strong>' }
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'This was one of 20 metrics you tracked. The other 19 weren\u2019t significant. Does that change anything?' }
+    ]
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'This was one of 20 metrics you tracked. The other 19 weren\u2019t significant. Does that change anything?' },
+      { speaker:'ca', text:'Those metrics weren\u2019t affected, which is fine \u2014 no regressions. And this one metric did improve, so that\u2019s a win. I\u2019d focus the narrative on the metric that moved.' }
+    ],
+    annotation: { type:'bad', text:'If you test 20 metrics at p < 0.05, you\u2019d expect one false positive by pure chance. "Focusing the narrative on the one that moved" is textbook p-hacking.' }
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'Is there anything else you\u2019d typically look at beyond the p-value?' }
+    ]
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'Is there anything else you\u2019d typically look at beyond the p-value?' },
+      { speaker:'ca', text:'I\u2019d check that the sample size was large enough and that we ran the test for a full week to avoid day-of-week effects. But mainly, if the stats check out, the stats check out.' }
+    ],
+    annotation: { type:'warn', text:'Good instincts on sample size and duration. But "if the stats check out, the stats check out" reveals the recipe-following mindset. No mention of effect size, confidence intervals, or business context.' }
+  },
+  // Takeaway step
+  { takeaway: true }
+];
+
+let mockStep = -1;
+
+function renderMock() {
+  const container = document.getElementById('mock-conversation');
+  const stepData = mockSteps[mockStep];
+  const counter = document.getElementById('mock-step-counter');
+  const nextBtn = document.getElementById('mock-next-btn');
+  const backBtn = document.getElementById('mock-back-btn');
+
+  counter.textContent = `${mockStep + 1} / ${mockSteps.length}`;
+  backBtn.style.visibility = mockStep <= 0 ? 'hidden' : 'visible';
+  nextBtn.textContent = mockStep >= mockSteps.length - 1 ? 'Done' : 'Next';
+
+  if (mockStep < 0) {
+    container.innerHTML = '<p style="text-align:center;color:var(--text3);margin:auto">Press <strong style="color:var(--text)">Start</strong> to begin the interview.</p>';
+    counter.textContent = '';
+    backBtn.style.visibility = 'hidden';
+    nextBtn.textContent = 'Start';
+    return;
+  }
+
+  if (stepData.takeaway) {
+    const items = [
+      '<strong>They followed the recipe perfectly</strong> \u2014 and that\u2019s exactly the problem. Every step was "correct" by the textbook.',
+      '<strong>They never questioned the recipe.</strong> Is 0.05 the right threshold here? Does the effect matter? Could this be a false positive?',
+      '<strong>Statistical significance became the goal</strong> instead of a tool. The real question \u2014 "should we ship this?" \u2014 requires judgment the recipe doesn\u2019t provide.',
+      '<strong>The best practitioners understand the ingredients,</strong> not just the steps. They know when to deviate from the recipe.'
+    ];
+    container.innerHTML = '<div style="text-align:center;margin-bottom:1rem"><span style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:var(--pink)">What went wrong?</span></div>' +
+      items.map((item, i) => `<div class="mock-msg show" style="transition-delay:${i*0.08}s;align-items:center"><span style="color:var(--pink);font-size:1.2rem;flex-shrink:0;width:32px;text-align:center">\u2022</span><div style="font-size:0.95rem;line-height:1.5;color:var(--text2)">${item}</div></div>`).join('');
+    return;
+  }
+
+  let html = '';
+  const hasAnnotation = !!stepData.annotation;
+
+  stepData.messages.forEach((msg, i) => {
+    const isLast = i === stepData.messages.length - 1;
+    const dimClass = hasAnnotation && !isLast ? ' dim' : '';
+    html += `<div class="mock-msg show${dimClass}" style="transition-delay:${i*0.08}s">
+      <div class="mock-avatar ${msg.speaker}">${msg.speaker === 'iv' ? 'I' : 'C'}</div>
+      <div>
+        <div class="mock-speaker ${msg.speaker}">${msg.speaker === 'iv' ? 'Interviewer' : 'Candidate'}</div>
+        <div class="mock-bubble">${msg.text}</div>
+      </div>
+    </div>`;
+  });
+
+  if (hasAnnotation) {
+    const a = stepData.annotation;
+    html += `<div class="mock-annotation show" style="transition-delay:0.2s">
+      <div class="mock-ann-dot ${a.type}">${a.type === 'bad' ? '!' : '?'}</div>
+      <div class="mock-ann-text ${a.type}">${a.text}</div>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function mockAdvance() {
+  if (mockStep >= mockSteps.length - 1) {
+    // Done — advance to next slide
+    nextSlide();
+    mockStep = -1;
+    renderMock();
+    return;
+  }
+  mockStep++;
+  renderMock();
+}
+
+function mockBack() {
+  if (mockStep > 0) mockStep--;
+  renderMock();
+}
+
+renderMock();
+
+// ========== ETL MOCK INTERVIEW (GREAT ANSWER) ==========
+const etlSteps = [
+  {
+    messages: [
+      { speaker:'iv', text:'Tell me about an ETL pipeline you built.' }
+    ]
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'Tell me about an ETL pipeline you built.' },
+      { speaker:'ca', text:'Sure. At my last co-op, our marketing team was waiting 2\u20133 days to see campaign performance because the data lived in three places \u2014 Google Ads, Salesforce, and an internal Postgres database. I built a pipeline that unified those sources into a single daily snapshot so they could make budget decisions same-day.' }
+    ],
+    annotation: { type:'good', text:'Opened with the <strong>business problem and who cared</strong>, not the tech stack. The interviewer immediately understands the stakes.' }
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'Walk me through the architecture. Why did you design it that way?' }
+    ]
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'Walk me through the architecture. Why did you design it that way?' },
+      { speaker:'ca', text:'I used Python with Airflow for orchestration, landing raw data into S3, then transforming with dbt into a Snowflake warehouse. I chose incremental loads over full refreshes because the Google Ads table was around 80 million rows \u2014 a full refresh took 4 hours and blew past our 6 AM SLA. Incremental brought it down to about 20 minutes.' }
+    ],
+    annotation: { type:'good', text:'Every technology choice comes with a <strong>reason grounded in a real constraint</strong> \u2014 row count, SLA, runtime. This is the "why" ladder in action.' }
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'Why Airflow and not something simpler, like a cron job?' }
+    ]
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'Why Airflow and not something simpler, like a cron job?' },
+      { speaker:'ca', text:'Honestly, for version one a cron job would have been fine. There were only three sources. But the team had plans to onboard five more sources in Q2, and Airflow gave us dependency management, retries, and alerting out of the box. I\u2019d say the tradeoff was operational complexity \u2014 Airflow is heavy for a small team. If I were doing it again with that team size, I\u2019d probably look at Dagster or even Prefect for something lighter.' }
+    ],
+    annotation: { type:'good', text:'Acknowledges a cron job <strong>could</strong> have worked. Justifies the choice with future scale, then <strong>critiques their own decision</strong> and names an alternative. This is what senior thinking sounds like.' }
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'What was the hardest part?' }
+    ]
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'What was the hardest part?' },
+      { speaker:'ca', text:'Schema drift from Salesforce. They\u2019d add or rename fields without warning, and our pipeline would silently drop columns. I added a schema validation step that compared incoming columns to a contract file and raised an alert on mismatch. It wasn\u2019t elegant \u2014 it was a JSON diff in a pre-hook \u2014 but it caught three breaking changes before they hit the dashboard.' }
+    ],
+    annotation: { type:'good', text:'Describes a <strong>real failure mode</strong> they encountered, not a hypothetical. The solution is practical, and they\u2019re honest that it wasn\u2019t pretty. Then they quantify the impact.' }
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'How did you know the pipeline was working correctly?' }
+    ]
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'How did you know the pipeline was working correctly?' },
+      { speaker:'ca', text:'I built reconciliation checks \u2014 row counts between source and target, and a daily total-spend comparison against the Google Ads UI. If the numbers diverged by more than 0.5%, the DAG would flag it. We also did a two-week parallel run alongside the old manual process to build stakeholder trust before sunsetting it.' }
+    ],
+    annotation: { type:'good', text:'Demonstrates they think about <strong>data quality, not just data movement</strong>. The parallel run shows awareness that technical correctness alone doesn\u2019t earn trust.' }
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'What would you do differently if you started over?' }
+    ]
+  },
+  {
+    messages: [
+      { speaker:'iv', text:'What would you do differently if you started over?' },
+      { speaker:'ca', text:'Two things. First, I\u2019d invest in data contracts earlier \u2014 we bolted on schema validation reactively. Second, I\u2019d push back on the daily SLA. The marketing team said they needed daily, but when I looked at their actual decision cadence, they made budget changes weekly. A less aggressive SLA would have simplified the pipeline significantly and saved us on-call headaches.' }
+    ],
+    annotation: { type:'good', text:'Doesn\u2019t just name technical improvements \u2014 <strong>questions whether the requirement itself was right.</strong> This is the difference between building the thing right and building the right thing.' }
+  },
+  { takeaway: true }
+];
+
+let etlStep = -1;
+
+function renderEtl() {
+  const container = document.getElementById('etl-conversation');
+  const stepData = etlSteps[etlStep];
+  const counter = document.getElementById('etl-step-counter');
+  const nextBtn = document.getElementById('etl-next-btn');
+  const backBtn = document.getElementById('etl-back-btn');
+
+  counter.textContent = `${etlStep + 1} / ${etlSteps.length}`;
+  backBtn.style.visibility = etlStep <= 0 ? 'hidden' : 'visible';
+  nextBtn.textContent = etlStep >= etlSteps.length - 1 ? 'Done' : 'Next';
+
+  if (etlStep < 0) {
+    container.innerHTML = '<p style="text-align:center;color:var(--text3);margin:auto">Press <strong style="color:var(--text)">Start</strong> to begin the interview.</p>';
+    counter.textContent = '';
+    backBtn.style.visibility = 'hidden';
+    nextBtn.textContent = 'Start';
+    return;
+  }
+
+  if (stepData.takeaway) {
+    const items = [
+      '<strong>Every choice came with a "because"</strong> \u2014 not just what they used, but why, and what they considered instead.',
+      '<strong>They were honest about imperfection.</strong> The schema validation "wasn\u2019t elegant." Airflow was heavy. The daily SLA was probably wrong.',
+      '<strong>They thought beyond the code</strong> \u2014 stakeholder trust, decision cadence, on-call burden. The pipeline was a means to a business outcome.',
+      '<strong>Same experience. Different interview.</strong> A recipe follower would have said "I used Airflow, dbt, and Snowflake." This candidate explained <em>why those ingredients, in that combination, for that dish.</em>'
+    ];
+    container.innerHTML = '<div style="text-align:center;margin-bottom:1rem"><span style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:var(--green)">Why this works</span></div>' +
+      items.map((item, i) => `<div class="mock-msg show" style="transition-delay:${i*0.08}s;align-items:center"><span style="color:var(--green);font-size:1.2rem;flex-shrink:0;width:32px;text-align:center">\u2022</span><div style="font-size:0.95rem;line-height:1.5;color:var(--text2)">${item}</div></div>`).join('');
+    return;
+  }
+
+  let html = '';
+  const hasAnnotation = !!stepData.annotation;
+
+  stepData.messages.forEach((msg, i) => {
+    const isLast = i === stepData.messages.length - 1;
+    const dimClass = hasAnnotation && !isLast ? ' dim' : '';
+    html += `<div class="mock-msg show${dimClass}" style="transition-delay:${i*0.08}s">
+      <div class="mock-avatar ${msg.speaker}">${msg.speaker === 'iv' ? 'I' : 'C'}</div>
+      <div>
+        <div class="mock-speaker ${msg.speaker}">${msg.speaker === 'iv' ? 'Interviewer' : 'Candidate'}</div>
+        <div class="mock-bubble">${msg.text}</div>
+      </div>
+    </div>`;
+  });
+
+  if (hasAnnotation) {
+    const a = stepData.annotation;
+    html += `<div class="mock-annotation show" style="transition-delay:0.2s">
+      <div class="mock-ann-dot good">\u2713</div>
+      <div class="mock-ann-text good">${a.text}</div>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function etlAdvance() {
+  if (etlStep >= etlSteps.length - 1) {
+    nextSlide();
+    etlStep = -1;
+    renderEtl();
+    return;
+  }
+  etlStep++;
+  renderEtl();
+}
+
+function etlBack() {
+  if (etlStep > 0) etlStep--;
+  renderEtl();
+}
+
+renderEtl();
+</script>
+</body>
+</html>
