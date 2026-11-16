@@ -24,7 +24,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
 
 /* SLIDES */
 .slides{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1)}
-.slide{min-width:100vw;width:100vw;height:100vh;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:3rem 3rem 6rem;flex-shrink:0;opacity:0.3;transition:opacity 0.4s ease;overflow-y:auto;overflow-x:hidden}
+.slide{min-width:100vw;width:100vw;height:100vh;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:4rem 3rem;flex-shrink:0;opacity:0.3;transition:opacity 0.4s ease;overflow-y:auto;overflow-x:hidden}
 .slide.active{opacity:1}
 .slide-content{max-width:1100px;width:100%;text-align:center;position:relative;z-index:2}
 
@@ -41,7 +41,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
 .timeline:hover{opacity:1}
 .timeline-track{position:absolute;left:50%;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.1);transform:translateX(-50%);border-radius:1px}
 .timeline-fill{position:absolute;top:0;left:0;width:100%;height:0%;background:linear-gradient(180deg,var(--purple),var(--pink));border-radius:1px;transition:height 0.5s cubic-bezier(0.4,0,0.2,1)}
-.timeline-nodes{display:flex;flex-direction:column;gap:clamp(3px,1vh,10px);position:relative}
+.timeline-nodes{display:flex;flex-direction:column;gap:1rem;position:relative}
 .t-node{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);cursor:pointer;transition:all 0.3s;position:relative;z-index:1}
 .t-node:hover{background:var(--purple);transform:scale(1.8)}
 .t-node.visited{background:var(--purple)}
@@ -174,23 +174,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
 .mock-ann-dot.good{background:rgba(16,185,129,0.1);color:var(--green)}
 .mock-ann-text.good{background:rgba(16,185,129,0.06);border-left:3px solid var(--green);color:#55c070}
 
-.slide[data-extra]{display:none}
-body.extended .slide[data-extra]{display:flex}
-.time-evidence{display:flex;justify-content:space-between;align-items:center;gap:1.5rem;margin:1.5rem auto 2rem;max-width:1000px;border-block:1px solid var(--border);padding:1.5rem 0}
-.time-evidence strong{display:block;font-size:1.6rem}
-.time-evidence span{display:block;color:var(--text2);font-size:1rem}
-.time-evidence .elapsed strong{color:var(--cyan)}
-.evidence-table{max-width:1000px;margin:1.5rem auto 0}
-.evidence-table td{font-size:1.1rem}
-.slide[id^="s-pair-"] .s-title{font-size:clamp(2rem,4vw,3rem)}
-.slide[id^="s-pair-"] .s-sub{margin-bottom:1.25rem}
-.slide[id^="s-pair-"] .key-box{padding:1.25rem;margin:1.25rem auto}
-.slide[id^="s-pair-"] .section-badge{margin-bottom:1rem}
 @media(max-width:900px){
   .grid-2,.grid-3,.grid-4,.compare,.roles-grid,.commit-grid{grid-template-columns:1fr}
-  .slide{padding:2rem 1.5rem 6rem;justify-content:flex-start}
-  .time-evidence{flex-wrap:wrap;justify-content:center}
-  .timeline{display:none}
+  .slide{padding:2rem 1.5rem}
 }
 </style>
 </head>
@@ -200,6 +186,7 @@ body.extended .slide[data-extra]{display:flex}
 
 <div class="slides" id="slides">
 
+<!-- SLIDE 1: SILENT OPENER (on screen as students arrive) -->
 <section class="slide" id="s-opener">
   <div class="glow glow-purple"></div>
   <div class="slide-content">
@@ -221,6 +208,7 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
+<!-- SLIDE 2: TITLE -->
 <section class="slide" id="s-title">
   <div class="glow glow-purple"></div>
   <div class="glow glow-pink"></div>
@@ -232,29 +220,28 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
+<!-- SLIDE 3: TONIGHT'S FORMAT -->
 <section class="slide" id="s-format">
   <div class="slide-content">
-    <div class="section-badge badge-intro">One-hour workshop</div>
-    <h2 class="s-title">Explaining your thinking</h2>
-    <table class="tbl" style="max-width:850px;margin:2rem auto">
-      <tbody>
-        <tr><td>0–17 min</td><td>Overview, worked example, explanation framework</td></tr>
-        <tr><td>17–35 min</td><td>Explain, answer questions, get feedback</td></tr>
-        <tr><td>35–48 min</td><td>Try the same answer again, then debrief</td></tr>
-        <tr><td>48–60 min</td><td>Pair-programming interviews, AI agents, and questions</td></tr>
-      </tbody>
-    </table>
-    <p class="s-sub" style="margin-bottom:0">No installation. Everyone gets two attempts.</p>
+    <div class="section-badge badge-intro">Tonight's Format</div>
+    <h2 class="s-title">I talk ~30 min.<br>You work in triads ~75 min.</h2>
+    <p class="s-sub">You will not be asked to speak in front of the room. You will think, write, explain, and listen — in groups of 3.</p>
+    <div class="grid-3" style="max-width:800px;margin:2rem auto 0">
+      <div class="card" style="text-align:center"><span class="icon">🤔</span><h3>Think</h3><p>Silent writing first. Always.</p></div>
+      <div class="card" style="text-align:center"><span class="icon">🗣️</span><h3>Explain</h3><p>To 2 people. Not 30.</p></div>
+      <div class="card" style="text-align:center"><span class="icon">👂</span><h3>Listen</h3><p>Feedback that's specific & kind.</p></div>
+    </div>
   </div>
 </section>
 
+<!-- SLIDE 4: WHAT INTERVIEWERS EVALUATE -->
 <section class="slide" id="s-evaluate">
   <div class="glow glow-purple"></div>
   <div class="slide-content">
     <div class="section-badge badge-intro">The Other Side of the Table</div>
-    <h2 class="s-title">What I Listen For</h2>
+    <h2 class="s-title">What Interviewers<br>Actually Evaluate</h2>
     <table class="tbl" style="max-width:800px;margin:2rem auto 0">
-      <thead><tr><th>Beyond the answer</th><th>Evidence of understanding</th></tr></thead>
+      <thead><tr><th>What you think they want</th><th>What they actually evaluate</th></tr></thead>
       <tbody>
         <tr><td style="color:var(--text3)">Right answers</td><td>Clear reasoning out loud</td></tr>
         <tr><td style="color:var(--text3)">Tool knowledge</td><td>Tradeoff awareness</td></tr>
@@ -262,9 +249,11 @@ body.extended .slide[data-extra]{display:flex}
         <tr><td style="color:var(--text3)">Confidence</td><td>Thinking through uncertainty</td></tr>
       </tbody>
     </table>
+    <p style="color:var(--text3);margin-top:1.5rem;font-size:0.95rem">True whether you're interviewing for an analyst role or an ML engineer role.</p>
   </div>
 </section>
 
+<!-- SLIDE 5: WHY LADDER -->
 <section class="slide" id="s-why-ladder">
   <div class="glow glow-cyan"></div>
   <div class="slide-content">
@@ -282,12 +271,13 @@ body.extended .slide[data-extra]{display:flex}
       </div>
       <div class="card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.05)">
         <p style="color:var(--green);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem">Level 3 — Why ✓</p>
-        <p style="font-size:1.15rem;color:var(--text)">"My features had complex interactions. With 50K rows, bagging can reduce variance. I would still check performance on held-out data. And I needed feature importances for my non-technical stakeholder."</p>
+        <p style="font-size:1.15rem;color:var(--text)">"My features had complex interactions. With 50K rows, bagging reduces variance without overfitting. And I needed feature importances for my non-technical stakeholder."</p>
       </div>
     </div>
   </div>
 </section>
 
+<!-- SLIDE 6: LIVE DEMO INTRO -->
 <section class="slide" id="s-demo-intro">
   <div class="glow glow-pink"></div>
   <div class="slide-content">
@@ -297,277 +287,26 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
+<!-- SLIDE 7: BAD vs GOOD -->
 <section class="slide" id="s-demo-compare">
   <div class="slide-content">
     <div class="compare">
       <div class="compare-bad">
-        <div class="compare-label">Definition without enough context</div>
+        <div class="compare-label">❌ Technically correct. Won't get the job.</div>
         <p class="compare-text">"Precision is true positives over true positives plus false positives. Recall is true positives over true positives plus false negatives. For fraud, you'd want high recall."</p>
         <p style="color:var(--red);margin-top:1rem;font-size:0.9rem">→ Gave a definition when asked to reason.</p>
       </div>
       <div class="compare-good">
         <div class="compare-label">✓ Shows reasoning, tradeoffs, business awareness</div>
-        <p class="compare-text">"What happens when we flag a transaction: a review, a text, or a blocked payment? Missing fraud costs money, but blocking a genuine purchase also hurts customers. If flags trigger review, I would compare fraud caught against false alarms and the team's review capacity. Then I'd test a threshold against those costs."</p>
+        <p class="compare-text">"The question is really about what type of mistake hurts more. A missed fraud: thousands lost, trust destroyed. A false alarm: customer gets a 'was this you?' text — annoying but not catastrophic. So I'd lean recall. BUT — at 10M transactions/day, high recall could mean 100K false alarms. I'd find the threshold where recall is high but volume is operationally manageable."</p>
         <p style="color:var(--green);margin-top:1rem;font-size:0.9rem">→ Reasoning + real-world tradeoffs + honesty about limits.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="slide" id="s-triads">
-  <div class="glow glow-green"></div>
-  <div class="slide-content">
-    <div class="section-badge badge-exercise">Form Groups</div>
-    <h2 class="s-title">Find 2 People</h2>
-    <p class="s-sub">Ideally people you don't know well.<br>You'll be in this group for the rest of the night.</p>
-    <div class="roles-grid" style="max-width:600px;margin:2rem auto 0">
-      <div class="role-card"><div class="role-emoji">🎤</div><div class="role-name">Explainer</div><div class="role-desc">Explains the concept</div></div>
-      <div class="role-card"><div class="role-emoji">🎯</div><div class="role-name">Listener</div><div class="role-desc">Asks the follow-up</div></div>
-      <div class="role-card"><div class="role-emoji">👁️</div><div class="role-name">Observer</div><div class="role-desc">Gives honest feedback</div></div>
-    </div>
-  </div>
-</section>
-
-<section class="slide" id="s-warmup">
-  <div class="slide-content">
-    <div class="section-badge badge-exercise">Warm-Up</div>
-    <h2 class="s-title">30 Seconds Each</h2>
-    <div class="key-box" style="font-size:1.2rem;font-weight:500">
-      "I'm <span class="kw">[name]</span>, I'm targeting <span class="kw">[stream]</span> roles, and the project I'll probably discuss in interviews is <span class="kw">[one sentence]</span>."
-    </div>
-    <p style="color:var(--text3);margin-top:1rem">90 seconds total for all three. Then choose one question each.</p>
-  </div>
-</section>
-
-<section class="slide" id="s-ex1-title">
-  <div class="glow glow-green"></div>
-  <div class="slide-content">
-    <div class="section-badge badge-exercise">Main activity</div>
-    <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">The<br>Explanation Lab</h2>
-    <p class="s-sub">Practice explaining technical concepts out loud — to just 2 people.</p>
-  </div>
-</section>
-
-<section class="slide" id="s-explain-pattern">
-  <div class="slide-content">
-    <div class="section-badge badge-framework">Framework</div>
-    <h2 class="s-title">The Explanation Pattern</h2>
-    <div class="grid-4" style="max-width:1000px;margin:2rem auto 0">
-      <div class="card" style="text-align:center;border-color:rgba(59,130,246,0.3)"><span class="icon" style="color:var(--blue)">1</span><h3>Plain Language</h3><p>One sentence, no jargon</p></div>
-      <div class="card" style="text-align:center;border-color:rgba(139,92,246,0.3)"><span class="icon" style="color:var(--purple)">2</span><h3>Intuition</h3><p>Why does it exist? Why does it matter?</p></div>
-      <div class="card" style="text-align:center;border-color:rgba(16,185,129,0.3)"><span class="icon" style="color:var(--green)">3</span><h3>Real Example</h3><p>Concrete scenario with stakes</p></div>
-      <div class="card" style="text-align:center;border-color:rgba(249,115,22,0.3)"><span class="icon" style="color:var(--orange)">4</span><h3>Limits</h3><p>Tradeoffs, when it breaks</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="slide" id="s-ex1-how">
-  <div class="slide-content">
-    <h2 class="s-title">How It Works</h2>
-    <div class="flow">
-      <div class="flow-step">🤔 Think 1m</div><span class="flow-arrow">→</span>
-      <div class="flow-step">🗣️ Explain 2m</div><span class="flow-arrow">→</span>
-      <div class="flow-step">🎯 Follow-up 2m</div><span class="flow-arrow">→</span>
-      <div class="flow-step">👁️ Feedback 1m</div>
-    </div>
-    <p style="color:var(--text2);font-size:1.1rem;margin-top:1rem">3 rounds of 6 minutes. Everyone explains once. Choose a question from your stream in workshop.html. Keep it for your second attempt.</p>
-    <div class="stream-tags" style="margin-top:1.5rem">
-      <span class="stream-tag tag-uni">Universal</span>
-      <span class="stream-tag tag-ba">BA / DA</span>
-      <span class="stream-tag tag-ds">Data Science</span>
-      <span class="stream-tag tag-de">DE / MLE</span>
-      <span class="stream-tag tag-swe">SWE</span>
-      <span class="stream-tag tag-ai">AI / SWE</span>
-    </div>
-  </div>
-</section>
-
-<section class="slide timer-slide" id="s-timer-think">
-  <div class="glow glow-purple"></div>
-  <div class="slide-content">
-    <div class="timer-display" id="timer-think-display">1:00</div>
-    <div class="timer-label">Think</div>
-    <div class="timer-sub">Read your question. Organize your thoughts.</div>
-    <button class="timer-btn" onclick="toggleTimer('think',60)">Start Timer</button>
-  </div>
-</section>
-
-<section class="slide timer-slide" id="s-timer-explain">
-  <div class="glow glow-green"></div>
-  <div class="slide-content">
-    <div class="timer-display" id="timer-explain-display">2:00</div>
-    <div class="timer-label">Explain</div>
-    <div class="timer-sub">Clarity, not perfection.</div>
-    <button class="timer-btn" onclick="toggleTimer('explain',120)">Start Timer</button>
-  </div>
-</section>
-
-<section class="slide timer-slide" id="s-timer-followup">
-  <div class="glow glow-cyan"></div>
-  <div class="slide-content">
-    <div class="timer-display" id="timer-followup-display">2:00</div>
-    <div class="timer-label">Follow-up + Response</div>
-    <div class="timer-sub">What decision does this help someone make? What example would break your answer?</div>
-    <button class="timer-btn" onclick="toggleTimer('followup',120)">Start Timer</button>
-  </div>
-</section>
-
-<section class="slide timer-slide" id="s-timer-feedback">
-  <div class="slide-content">
-    <div class="timer-display" id="timer-feedback-display">1:00</div>
-    <div class="timer-label">Observer Feedback</div>
-    <div class="timer-sub">Name one clear point and one specific improvement. Check the reasoning as well as the delivery.</div>
-    <button class="timer-btn" onclick="toggleTimer('feedback',60)">Start Timer</button>
-  </div>
-</section>
-
-<section class="slide" id="s-rotate1">
-  <div class="slide-content">
-    <h2 class="hero-title" style="font-size:clamp(3rem,9vw,6rem)">Rotate!</h2>
-    <p class="s-sub">Rotate roles until everyone has explained their chosen question.</p>
-    <p style="color:var(--text3)">Return to Think for each person. After all three, advance to the second attempt.</p>
-  </div>
-</section>
-
-<section class="slide timer-slide" id="s-retry">
-  <div class="slide-content">
-    <div class="section-badge badge-exercise">Second attempt</div>
-    <h2 class="s-title">Same question, clearer answer</h2>
-    <p class="s-sub">Use the feedback. Keep one concrete example and explain why it matters.</p>
-    <div class="timer-display" id="timer-retry-display" style="font-size:5rem">3:00</div>
-    <div class="timer-sub">30s revise, 60s explain, 45s follow-up, 45s feedback</div>
-    <button class="timer-btn" onclick="toggleTimer('retry',180)">Start Timer</button>
-    <p style="color:var(--text2);margin-top:1rem">Rotate three times. Everyone improves their own answer.</p>
-  </div>
-</section>
-
-<section class="slide" id="s-debrief">
-  <div class="slide-content">
-    <div class="section-badge badge-exercise">Debrief</div>
-    <h2 class="s-title">What changed on attempt two?</h2>
-    <div class="fu-list">
-      <div class="fu-item">Which example made the concept easier to understand?</div>
-      <div class="fu-item">Which follow-up exposed an assumption or a gap?</div>
-      <div class="fu-item">Could your listener explain why the answer matters?</div>
-    </div>
-    <p class="s-sub" style="margin-top:2rem">The same skills help when you work through code with another person.</p>
-  </div>
-</section>
-
-<section class="slide" id="s-pair-agents">
-  <div class="slide-content">
-    <div class="section-badge badge-closing">Pair-programming interviews</div>
-    <h2 class="s-title">AI agents and your reasoning</h2>
-    <p class="s-sub">Use agents when the interview permits them. You still own the explanation and the checks.</p>
-    <div class="checklist">
-      <div class="check-item"><span class="num">1.</span><span>Agree on the problem, success criteria, and permitted tools with your interviewer.</span></div>
-      <div class="check-item"><span class="num">2.</span><span>Give the agent a small task. Review its assumptions and changes out loud.</span></div>
-      <div class="check-item"><span class="num">3.</span><span>Predict a test result yourself, then run it. Investigate any mismatch.</span></div>
-      <div class="check-item"><span class="num">4.</span><span>Explain why the result solves the problem and what you have not checked.</span></div>
-    </div>
-    <p style="color:var(--text3);margin-top:1.3rem">AI is optional in this workshop. Use only approved tools and data in an interview.</p>
-  </div>
-</section>
-
-<section class="slide" id="s-pair-dates">
-  <div class="slide-content">
-    <div class="section-badge badge-demo">A plausible answer worth checking</div>
-    <h2 class="s-title">“Did this last at least a day?”</h2>
-    <p class="s-sub">One fictional session. All timestamps are UTC.</p>
-    <div class="time-evidence" aria-label="Session starts January 10 at 23:55 and ends January 11 at 00:05, ten elapsed minutes">
-      <div><strong>Jan 10, 23:55</strong><span>Session starts</span></div>
-      <div class="elapsed"><strong>10 minutes</strong><span>Midnight falls between them</span></div>
-      <div><strong>Jan 11, 00:05</strong><span>Session ends</span></div>
-    </div>
-    <table class="tbl evidence-table">
-      <thead><tr><th>Rule</th><th>Result</th><th>Question it answers</th></tr></thead>
-      <tbody>
-        <tr><td>End date &gt; start date</td><td style="color:var(--orange)">Yes</td><td>Did it cross a calendar date?</td></tr>
-        <tr><td>Elapsed time ≥ 24 hours</td><td style="color:var(--cyan)">No</td><td>Did it last at least 24 hours?</td></tr>
-      </tbody>
-    </table>
-    <p style="color:var(--text2);margin-top:1.5rem">Which meaning does the business need? Clarify before changing the code.</p>
-  </div>
-</section>
-
-<section class="slide" id="s-pair-debug">
-  <div class="slide-content">
-    <div class="section-badge badge-demo">Debugging out loud</div>
-    <h2 class="s-title">A small test exposes the assumption</h2>
-    <p class="s-sub">Assume the agreed rule is at least 24 elapsed hours.</p>
-    <div class="key-box" style="font-size:1.15rem;text-align:left">“The agent compared dates and discarded the time. This ten-minute example disproves that rule for our requirement. I’ll compare elapsed time and check the threshold.”</div>
-    <table class="tbl evidence-table">
-      <thead><tr><th>Test</th><th>Expected</th><th>Why it matters</th></tr></thead>
-      <tbody>
-        <tr><td>10 minutes across midnight</td><td>No</td><td>Catches the original mistake</td></tr>
-        <tr><td>23h 59m</td><td>No</td><td>Just below the threshold</td></tr>
-        <tr><td>24h exactly</td><td>Yes</td><td>“At least” includes equality</td></tr>
-        <tr><td>24h 01m</td><td>Yes</td><td>Just above the threshold</td></tr>
-      </tbody>
-    </table>
-    <p style="color:var(--text3);margin-top:1rem">Next questions: missing end times, reversed timestamps, and time zones.</p>
-  </div>
-</section>
-
-<section class="slide" id="s-pair-business">
-  <div class="slide-content">
-    <div class="section-badge badge-demo">Even a silly prompt has a purpose</div>
-    <h2 class="s-title">Overnight dragon parking</h2>
-    <p class="s-sub">“Charge dragons that stay overnight.”<br>One dragon arrives at 23:55 and leaves at 00:05.</p>
-    <table class="tbl evidence-table">
-      <thead><tr><th>If the policy means…</th><th>The ten-minute stay…</th><th>The rule needs…</th></tr></thead>
-      <tbody>
-        <tr><td>Crossing local midnight incurs a fee</td><td>Qualifies</td><td>Dates in the car park’s time zone</td></tr>
-        <tr><td>The first 24 elapsed hours are free</td><td>Does not qualify</td><td>Duration and the exact fee boundary</td></tr>
-      </tbody>
-    </table>
-    <div class="key-box" style="font-size:1.15rem">“Is this a nightly parking fee or a duration allowance? The same dragon owes a different amount under each policy.”</div>
-    <p style="color:var(--text2)">Ask the interviewer. If they leave it open, state your assumption and proceed.</p>
-  </div>
-</section>
-
-<section class="slide" id="s-pair-handoff">
-  <div class="slide-content">
-    <div class="section-badge badge-closing">Closing tips and questions</div>
-    <h2 class="s-title">Making your work easy to follow</h2>
-    <div class="fu-list">
-      <div class="fu-item">“Here’s the problem I think we’re solving. Does that match your intent?”</div>
-      <div class="fu-item">“My hypothesis is ___. This small example will test it.”</div>
-      <div class="fu-item">“The agent suggested ___. I checked it by ___.”</div>
-      <div class="fu-item">“This meets the agreed rule because ___. I haven’t yet checked ___.”</div>
-    </div>
-    <p class="s-sub" style="margin-top:2rem;margin-bottom:0">Narrate decisions. Invite your partner in. Keep changes small.</p>
-  </div>
-</section>
-
-<section class="slide" id="s-connected">
-  <div class="slide-content">
-    <div class="section-badge badge-closing">Resources</div>
-    <h2 class="s-title">Stay Connected</h2>
-    <p class="s-sub">Open workshop.html for the explanation questions, pair-programming examples, and original practice materials.</p>
-    <div class="grid-2" style="max-width:600px;margin:0.5rem auto 0;text-align:center;gap:1rem">
-      <div class="card" style="padding:1.1rem"><h3>Pair Programming</h3><p>Agent use, debugging, and business context</p></div>
-      <div class="card" style="padding:1.1rem"><h3>Mock Interviews</h3><p>Click-through examples with annotations</p></div>
-      <div class="card" style="padding:1.1rem"><h3>Frameworks</h3><p>STAR-T, Why Ladder, Explanation Pattern</p></div>
-      <div class="card" style="padding:1.1rem"><h3>Question Bank</h3><p>Full bank by stream and category</p></div>
-    </div>
-    <p style="margin-top:1.25rem"><a href="workshop.html" style="color:var(--cyan)">Participant reference</a> &nbsp; <a href="index.html?extended=1#s-extra" style="color:var(--cyan)">Extra practice slides</a></p>
-  </div>
-</section>
-
-<section class="slide" id="s-final">
-  <div class="glow glow-purple"></div>
-  <div class="glow glow-pink"></div>
-  <div class="slide-content">
-    <p class="final-quote">"You came in tonight knowing this material. You're leaving knowing how to <em>say it.</em> That's a different skill — the same skill whether you're heading into an analyst interview or an ML engineer interview. Keep practising with your group. <em>One rep at a time.</em>"</p>
-    <p style="font-size:1.2rem;font-weight:600;margin-top:1rem">Ravin Lathigra</p>
-    <p style="color:var(--text3);font-size:0.95rem">rlathigra@gmail.com</p>
-  </div>
-</section>
-
-<section data-extra class="slide" id="s-extra"><div class="slide-content"><div class="section-badge badge-framework">Optional reference</div><h2 class="s-title">Extra practice</h2><p class="s-sub">Original interview simulations, project pitches, and mock rounds. These sit outside the one-hour session.</p><p><a href="index.html" style="color:var(--cyan)">Return to the one-hour deck</a></p></div></section>
-
-<section data-extra class="slide" id="s-mock-pvalue">
+<!-- SLIDE 8: MOCK INTERVIEW — RECIPE FOLLOWER -->
+<section class="slide" id="s-mock-pvalue">
   <div class="glow glow-pink"></div>
   <div class="slide-content" style="max-width:900px">
     <div class="section-badge badge-demo">Live Example</div>
@@ -586,7 +325,8 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
-<section data-extra class="slide" id="s-mock-etl">
+<!-- SLIDE 9: MOCK INTERVIEW — GREAT ANSWER (ETL) -->
+<section class="slide" id="s-mock-etl">
   <div class="glow glow-green"></div>
   <div class="slide-content" style="max-width:900px">
     <div class="section-badge badge-demo">Live Example</div>
@@ -604,16 +344,160 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
-<section data-extra class="slide" id="s-ex2-title">
+<!-- SLIDE 10: THE GENAI NOTE -->
+<section class="slide" id="s-genai">
+  <div class="slide-content">
+    <div class="big-quote">"If an AI wrote your code and you can't explain the decisions in that code, the interviewer will find that gap in <span class="highlight">about 90 seconds.</span>"</div>
+    <p style="color:var(--text3);margin-top:2rem;font-size:1rem">Tonight we practice the thing no tool can do for you: explaining your reasoning with your own voice.</p>
+  </div>
+</section>
+
+<!-- SLIDE 9: FORM TRIADS -->
+<section class="slide" id="s-triads">
+  <div class="glow glow-green"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-exercise">Form Groups</div>
+    <h2 class="s-title">Find 2 People</h2>
+    <p class="s-sub">Ideally people you don't know well.<br>You'll be in this group for the rest of the night.</p>
+    <div class="roles-grid" style="max-width:600px;margin:2rem auto 0">
+      <div class="role-card"><div class="role-emoji">🎤</div><div class="role-name">Explainer</div><div class="role-desc">Explains the concept</div></div>
+      <div class="role-card"><div class="role-emoji">🎯</div><div class="role-name">Listener</div><div class="role-desc">Asks the follow-up</div></div>
+      <div class="role-card"><div class="role-emoji">👁️</div><div class="role-name">Observer</div><div class="role-desc">Gives honest feedback</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10: WARM-UP -->
+<section class="slide" id="s-warmup">
+  <div class="slide-content">
+    <div class="section-badge badge-exercise">Warm-Up</div>
+    <h2 class="s-title">30 Seconds Each</h2>
+    <div class="key-box" style="font-size:1.2rem;font-weight:500">
+      "I'm <span class="kw">[name]</span>, I'm targeting <span class="kw">[stream]</span> roles, and the project I'll probably discuss in interviews is <span class="kw">[one sentence]</span>."
+    </div>
+    <p style="color:var(--text3);margin-top:1rem">90 seconds total for all three. Then chat for a couple minutes.</p>
+  </div>
+</section>
+
+<!-- SLIDE 11: EXERCISE 1 TITLE -->
+<section class="slide" id="s-ex1-title">
+  <div class="glow glow-green"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-exercise">Exercise 1</div>
+    <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">The<br>Explanation Lab</h2>
+    <p class="s-sub">Practice explaining technical concepts out loud — to just 2 people.</p>
+  </div>
+</section>
+
+<!-- SLIDE 12: EXPLANATION PATTERN -->
+<section class="slide" id="s-explain-pattern">
+  <div class="slide-content">
+    <div class="section-badge badge-framework">Framework</div>
+    <h2 class="s-title">The Explanation Pattern</h2>
+    <div class="grid-4" style="max-width:1000px;margin:2rem auto 0">
+      <div class="card" style="text-align:center;border-color:rgba(59,130,246,0.3)"><span class="icon" style="color:var(--blue)">1</span><h3>Plain Language</h3><p>One sentence, no jargon</p></div>
+      <div class="card" style="text-align:center;border-color:rgba(139,92,246,0.3)"><span class="icon" style="color:var(--purple)">2</span><h3>Intuition</h3><p>Why does it exist? Why does it matter?</p></div>
+      <div class="card" style="text-align:center;border-color:rgba(16,185,129,0.3)"><span class="icon" style="color:var(--green)">3</span><h3>Real Example</h3><p>Concrete scenario with stakes</p></div>
+      <div class="card" style="text-align:center;border-color:rgba(249,115,22,0.3)"><span class="icon" style="color:var(--orange)">4</span><h3>Limits</h3><p>Tradeoffs, when it breaks</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 13: HOW IT WORKS -->
+<section class="slide" id="s-ex1-how">
+  <div class="slide-content">
+    <h2 class="s-title">How It Works</h2>
+    <div class="flow">
+      <div class="flow-step">🤔 Think 45s</div><span class="flow-arrow">→</span>
+      <div class="flow-step">🗣️ Explain 60s</div><span class="flow-arrow">→</span>
+      <div class="flow-step">🎯 Follow-up 45s</div><span class="flow-arrow">→</span>
+      <div class="flow-step">👁️ Feedback 30s</div>
+    </div>
+    <p style="color:var(--text2);font-size:1.1rem;margin-top:1rem">3 rounds. Everyone explains once. Pick a question matching your stream from the shared file.</p>
+    <div class="stream-tags" style="margin-top:1.5rem">
+      <span class="stream-tag tag-uni">Universal</span>
+      <span class="stream-tag tag-ba">BA / DA</span>
+      <span class="stream-tag tag-ds">Data Science</span>
+      <span class="stream-tag tag-de">DE / MLE</span>
+      <span class="stream-tag tag-swe">SWE</span>
+      <span class="stream-tag tag-ai">AI / SWE</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 14: TIMER - THINK -->
+<section class="slide timer-slide" id="s-timer-think">
   <div class="glow glow-purple"></div>
   <div class="slide-content">
-    <div class="section-badge badge-exercise">Extra practice</div>
+    <div class="timer-display" id="timer-think-display">0:45</div>
+    <div class="timer-label">Think</div>
+    <div class="timer-sub">Read your question. Organize your thoughts.</div>
+    <button class="timer-btn" onclick="toggleTimer('think',45)">Start Timer</button>
+  </div>
+</section>
+
+<!-- SLIDE 15: TIMER - EXPLAIN -->
+<section class="slide timer-slide" id="s-timer-explain">
+  <div class="glow glow-green"></div>
+  <div class="slide-content">
+    <div class="timer-display" id="timer-explain-display">1:00</div>
+    <div class="timer-label">Explain</div>
+    <div class="timer-sub">Clarity, not perfection.</div>
+    <button class="timer-btn" onclick="toggleTimer('explain',60)">Start Timer</button>
+  </div>
+</section>
+
+<!-- SLIDE 16: TIMER - FOLLOW-UP -->
+<section class="slide timer-slide" id="s-timer-followup">
+  <div class="glow glow-cyan"></div>
+  <div class="slide-content">
+    <div class="timer-display" id="timer-followup-display">0:45</div>
+    <div class="timer-label">Follow-up + Response</div>
+    <div class="timer-sub">Listener asks the follow-up question.</div>
+    <button class="timer-btn" onclick="toggleTimer('followup',45)">Start Timer</button>
+  </div>
+</section>
+
+<!-- SLIDE 17: TIMER - FEEDBACK -->
+<section class="slide timer-slide" id="s-timer-feedback">
+  <div class="slide-content">
+    <div class="timer-display" id="timer-feedback-display">0:30</div>
+    <div class="timer-label">Observer Feedback</div>
+    <div class="timer-sub">"Could I explain this concept to someone else based on what I just heard?"</div>
+    <button class="timer-btn" onclick="toggleTimer('feedback',30)">Start Timer</button>
+  </div>
+</section>
+
+<!-- SLIDE 18: ROTATE -->
+<section class="slide" id="s-rotate1">
+  <div class="slide-content">
+    <h2 class="hero-title" style="font-size:clamp(3rem,9vw,6rem)">Rotate!</h2>
+    <p class="s-sub">Next person explains. New question.</p>
+    <p style="color:var(--text3)">Use the same timer slides — arrow back to "Think" when ready.</p>
+  </div>
+</section>
+
+<!-- SLIDE 19: BREAK -->
+<section class="slide" id="s-break">
+  <div class="slide-content">
+    <div class="section-badge badge-break">5 Minutes</div>
+    <h2 class="hero-title" style="font-size:clamp(3rem,9vw,5rem)">Break</h2>
+    <p class="s-sub">Stretch. Swap triads if levels felt mismatched.</p>
+  </div>
+</section>
+
+<!-- SLIDE 20: EXERCISE 2 TITLE -->
+<section class="slide" id="s-ex2-title">
+  <div class="glow glow-purple"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-exercise">Exercise 2</div>
     <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">Own Your<br>Project</h2>
     <p class="s-sub">Write and rehearse an interview-ready project pitch. Then stress-test it.</p>
   </div>
 </section>
 
-<section data-extra class="slide" id="s-start">
+<!-- SLIDE 21: STAR-T -->
+<section class="slide" id="s-start">
   <div class="glow glow-cyan"></div>
   <div class="slide-content">
     <div class="section-badge badge-framework">Framework</div>
@@ -632,7 +516,8 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
-<section data-extra class="slide" id="s-key-sentence">
+<!-- SLIDE 22: THE KEY SENTENCE -->
+<section class="slide" id="s-key-sentence">
   <div class="glow glow-purple"></div>
   <div class="glow glow-pink"></div>
   <div class="slide-content">
@@ -643,7 +528,8 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
-<section data-extra class="slide" id="s-why-streams">
+<!-- SLIDE 23: WHY ACROSS STREAMS -->
+<section class="slide" id="s-why-streams">
   <div class="slide-content">
     <h2 class="s-title">The "Why" Across Streams</h2>
     <div style="text-align:left;max-width:850px;margin:1.5rem auto 0">
@@ -655,7 +541,8 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
-<section data-extra class="slide timer-slide" id="s-solo-write">
+<!-- SLIDE 24: SOLO WRITING -->
+<section class="slide timer-slide" id="s-solo-write">
   <div class="glow glow-purple"></div>
   <div class="slide-content">
     <div class="section-badge badge-exercise">Solo Writing</div>
@@ -666,7 +553,8 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
-<section data-extra class="slide" id="s-triad-pitch">
+<!-- SLIDE 25: TRIAD PITCHES -->
+<section class="slide" id="s-triad-pitch">
   <div class="slide-content">
     <h2 class="s-title">Triad Pitches</h2>
     <p class="s-sub">7 min per person: 2 min pitch + 3 min follow-ups + 2 min feedback</p>
@@ -682,7 +570,8 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
-<section data-extra class="slide timer-slide" id="s-timer-pitch">
+<!-- SLIDE 26: PITCH TIMER -->
+<section class="slide timer-slide" id="s-timer-pitch">
   <div class="glow glow-green"></div>
   <div class="slide-content">
     <div class="timer-display" id="timer-pitch-display">7:00</div>
@@ -692,16 +581,18 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
-<section data-extra class="slide" id="s-ex3-title">
+<!-- SLIDE 27: EXERCISE 3 TITLE -->
+<section class="slide" id="s-ex3-title">
   <div class="glow glow-pink"></div>
   <div class="slide-content">
-    <div class="section-badge badge-exercise">Extra practice</div>
+    <div class="section-badge badge-exercise">Exercise 3</div>
     <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">The Real<br>Thing</h2>
     <p class="s-sub">Full mock interview simulation. One round each. As close to real as possible.</p>
   </div>
 </section>
 
-<section data-extra class="slide" id="s-mock-setup">
+<!-- SLIDE 28: MOCK SETUP -->
+<section class="slide" id="s-mock-setup">
   <div class="slide-content">
     <h2 class="s-title">Choose Questions by Stream</h2>
     <table class="tbl" style="max-width:700px;margin:1.5rem auto 0">
@@ -719,7 +610,8 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
-<section data-extra class="slide timer-slide" id="s-timer-mock">
+<!-- SLIDE 29: MOCK TIMER -->
+<section class="slide timer-slide" id="s-timer-mock">
   <div class="glow glow-pink"></div>
   <div class="slide-content">
     <div class="timer-display" id="timer-mock-display">6:00</div>
@@ -729,7 +621,18 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
-<section data-extra class="slide" id="s-interview-tips">
+<!-- SLIDE 30: CLOSING TITLE -->
+<section class="slide" id="s-closing-title">
+  <div class="glow glow-purple"></div>
+  <div class="glow glow-pink"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-closing">Closing</div>
+    <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">What Changes<br>Tomorrow</h2>
+  </div>
+</section>
+
+<!-- SLIDE 31: DURING THE INTERVIEW -->
+<section class="slide" id="s-interview-tips">
   <div class="slide-content">
     <h2 class="s-title">During the Interview</h2>
     <div class="checklist">
@@ -741,7 +644,8 @@ body.extended .slide[data-extra]{display:flex}
   </div>
 </section>
 
-<section data-extra class="slide" id="s-commitments">
+<!-- SLIDE 32: THREE COMMITMENTS -->
+<section class="slide" id="s-commitments">
   <div class="slide-content">
     <h2 class="s-title">Your Three Things</h2>
     <p class="s-sub">Open your notes app. Write these down.</p>
@@ -751,6 +655,32 @@ body.extended .slide[data-extra]{display:flex}
       <div class="commit-card"><div class="commit-num">3</div><div class="commit-text">ONE person from my triad I'll practice with.</div></div>
     </div>
     <p style="color:var(--text3);margin-top:1.5rem;font-size:0.95rem">Look at your triad. Exchange contact info. That practice session is the highest-ROI thing you can do.</p>
+  </div>
+</section>
+
+<!-- SLIDE 33: STAY CONNECTED -->
+<section class="slide" id="s-connected">
+  <div class="slide-content">
+    <div class="section-badge badge-closing">Resources</div>
+    <h2 class="s-title">Stay Connected</h2>
+    <p class="s-sub">I'll share the slides file with everything from tonight — exercises, mock interviews, frameworks, and question banks. It's all in one place.</p>
+    <div class="grid-2" style="max-width:600px;margin:2rem auto 0;text-align:center">
+      <div class="card"><h3>Exercise Questions</h3><p>All streams, with follow-ups</p></div>
+      <div class="card"><h3>Mock Interviews</h3><p>Click-through examples with annotations</p></div>
+      <div class="card"><h3>Frameworks</h3><p>STAR-T, Why Ladder, Explanation Pattern</p></div>
+      <div class="card"><h3>Question Bank</h3><p>Full bank by stream and category</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 34: FINAL -->
+<section class="slide" id="s-final">
+  <div class="glow glow-purple"></div>
+  <div class="glow glow-pink"></div>
+  <div class="slide-content">
+    <p class="final-quote">"You came in tonight knowing this material. You're leaving knowing how to <em>say it.</em> That's a different skill — the same skill whether you're heading into an analyst interview or an ML engineer interview. The gap is smaller than it was at 5:30. <em>One rep at a time.</em>"</p>
+    <p style="font-size:1.2rem;font-weight:600;margin-top:1rem">Ravin Lathigra</p>
+    <p style="color:var(--text3);font-size:0.95rem">rlathigra@gmail.com</p>
   </div>
 </section>
 
@@ -769,9 +699,7 @@ body.extended .slide[data-extra]{display:flex}
 
 <script>
 // ========== SLIDE NAVIGATION ==========
-const extended = new URLSearchParams(window.location.search).get('extended') === '1';
-document.body.classList.toggle('extended', extended);
-const slides = [...document.querySelectorAll('.slide')].filter(s => extended || !s.hasAttribute('data-extra'));
+const slides = document.querySelectorAll('.slide');
 const total = slides.length;
 let current = 0;
 
@@ -822,20 +750,15 @@ for (let i = 0; i < total; i++) {
 nodesHTML += '</div>';
 tl.innerHTML = nodesHTML;
 
-// Direct links also work when the files open locally.
-function openLinkedSlide() {
-  const idx = slides.findIndex(s => '#' + s.id === window.location.hash);
-  updateSlide(idx < 0 ? 0 : idx);
-}
-window.addEventListener('hashchange', openLinkedSlide);
-openLinkedSlide();
+// Init
+updateSlide(0);
 
 // ========== TIMERS ==========
 const timers = {};
 
 function toggleTimer(name, totalSec) {
   const display = document.getElementById(`timer-${name}-display`);
-  const btn = display.closest('.slide').querySelector('.timer-btn');
+  const btn = event.target;
 
   if (timers[name]) {
     // Stop
