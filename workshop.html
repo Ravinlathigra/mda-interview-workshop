@@ -137,6 +137,7 @@ const TABS = [
   {id:'demle',label:'DE / MLE'},
   {id:'swe',label:'SWE'},
   {id:'aiswe',label:'AI / SWE'},
+  {id:'debug',label:'Debugging Lab'},
   {id:'mock',label:'Mock Interviews'},
   {id:'resources',label:'Resources'}
 ];
@@ -381,6 +382,60 @@ function buildMockInterviewsTab() {
   return html;
 }
 
+function buildDebugLabTab() {
+  return `
+  <h2>SQL Debugging Lab</h2>
+  <p style="color:var(--text-dim);margin-bottom:1.5rem">Two queries run and return believable answers. Your job is to establish whether those answers deserve trust.</p>
+
+  <div class="framework">
+    <h3>Start the notebook</h3>
+    <p style="font-family:var(--mono);font-size:0.9rem;margin:0.8rem 0">marimo edit lab/app.py</p>
+    <p>Use the setup steps in <strong>guides/candidate-guide.md</strong> if this is your first run.</p>
+  </div>
+
+  <div class="section-title">Case 1: Inflated session counts</div>
+  <div class="exercise-card" onclick="toggleCard(this)">
+    <div class="card-header"><span class="tag tag-demle">SQL / Data</span><span class="reveal-hint">Click for interview prompt</span></div>
+    <div class="card-prompt">A query reports 10 sessions for active shops. Investigate before the metric reaches a dashboard.</div>
+    <div class="card-reveal">
+      <div class="followup-label">Your handoff must include</div>
+      <p>The expected grain, the failed assumption, a corrected result, and an independent validation check.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Case 2: Calendar days and elapsed time</div>
+  <div class="exercise-card" onclick="toggleCard(this)">
+    <div class="card-header"><span class="tag tag-bada">Metrics / Time</span><span class="reveal-hint">Click for interview prompt</span></div>
+    <div class="card-prompt">A report says 6 of 8 sessions lasted at least one day. Product partners interpret that as at least 24 elapsed hours.</div>
+    <div class="card-reveal">
+      <div class="followup-label">Your handoff must include</div>
+      <p>A precise definition, one counterexample, the corrected result, and a boundary test.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Investigation loop</div>
+  <div class="framework">
+    <table>
+      <tr><th>Step</th><th>Question</th><th>Evidence</th></tr>
+      <tr><td>Define</td><td>What should the metric and one row mean?</td><td>A plain-language definition and expected grain</td></tr>
+      <tr><td>Inspect</td><td>Which assumption could make the output wrong?</td><td>Key uniqueness, row counts, nulls, and boundary values</td></tr>
+      <tr><td>Isolate</td><td>What is the smallest proof?</td><td>A counterexample row or intermediate count</td></tr>
+      <tr><td>Correct</td><td>How does the SQL express the definition?</td><td>A query whose grain and time semantics are explicit</td></tr>
+      <tr><td>Validate</td><td>What independent check could catch a regression?</td><td>Reconciliation plus a targeted test</td></tr>
+    </table>
+  </div>
+
+  <div class="resource-card">
+    <h3 style="color:var(--accent)">AI use</h3>
+    <p>AI tools are allowed for syntax, hypotheses, and critique. Explain every query you keep and validate its assumptions independently.</p>
+  </div>
+
+  <div class="resource-card">
+    <h3>Data notice</h3>
+    <p>All data is synthetic and uses fictional shops and sessions. The lab uses common commerce vocabulary for education. It is not an official Shopify interview, process, dataset, or endorsement.</p>
+  </div>`;
+}
+
 function buildResourcesTab() {
   return `
   <h2>Resources</h2>
@@ -562,6 +617,7 @@ function init() {
       case 'demle': content = buildStreamTab('demle','DE / MLE','tag-demle'); break;
       case 'swe': content = buildStreamTab('swe','SWE','tag-swe'); break;
       case 'aiswe': content = buildStreamTab('aiswe','AI / SWE','tag-aiswe'); break;
+      case 'debug': content = buildDebugLabTab(); break;
       case 'mock': content = buildMockInterviewsTab(); break;
       case 'resources': content = buildResourcesTab(); break;
     }

@@ -215,7 +215,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
   <div class="slide-content">
     <h1 class="hero-title">Bridging<br>the Gap</h1>
     <p class="hero-sub">From Knowing to Showing in Technical Interviews</p>
-    <p class="hero-meta">Ravin Lathigra &bull; MDA Alumnus &bull; Senior Data Developer @ Shopify</p>
+    <p class="hero-meta">Ravin Lathigra &bull; MDA Alumnus &bull; Staff Data Engineer @ Shopify</p>
     <p class="hero-meta" style="margin-top:0.5rem;color:var(--text3)">February 23, 2026 &bull; NCB284 &bull; Western University</p>
   </div>
 </section>
@@ -224,12 +224,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
 <section class="slide" id="s-format">
   <div class="slide-content">
     <div class="section-badge badge-intro">Tonight's Format</div>
-    <h2 class="s-title">I talk ~30 min.<br>You work in triads ~75 min.</h2>
-    <p class="s-sub">You will not be asked to speak in front of the room. You will think, write, explain, and listen — in groups of 3.</p>
+    <h2 class="s-title">You will debug, explain,<br>and defend your decisions.</h2>
+    <p class="s-sub">The two-hour format includes a 35-minute SQL lab and focused practice in groups of 2 or 3.</p>
     <div class="grid-3" style="max-width:800px;margin:2rem auto 0">
-      <div class="card" style="text-align:center"><span class="icon">🤔</span><h3>Think</h3><p>Silent writing first. Always.</p></div>
-      <div class="card" style="text-align:center"><span class="icon">🗣️</span><h3>Explain</h3><p>To 2 people. Not 30.</p></div>
-      <div class="card" style="text-align:center"><span class="icon">👂</span><h3>Listen</h3><p>Feedback that's specific & kind.</p></div>
+      <div class="card" style="text-align:center"><span class="icon">🔎</span><h3>Debug</h3><p>Find evidence before changing the query.</p></div>
+      <div class="card" style="text-align:center"><span class="icon">🗣️</span><h3>Explain</h3><p>Make assumptions and reasoning visible.</p></div>
+      <div class="card" style="text-align:center"><span class="icon">✓</span><h3>Validate</h3><p>Prove the correction independently.</p></div>
     </div>
   </div>
 </section>
@@ -379,11 +379,57 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
   </div>
 </section>
 
+<!-- V2 DEBUGGING LAB: EXERCISE 1 -->
+<section class="slide" id="s-debug-lab">
+  <div class="glow glow-cyan"></div>
+  <div class="slide-content">
+    <div class="section-badge badge-exercise">Exercise 1</div>
+    <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">SQL<br>Debugging Lab</h2>
+    <p class="s-sub">Two queries run successfully and return believable answers. Both answers are wrong.</p>
+    <p style="color:var(--text3);font-family:var(--mono);font-size:0.95rem">marimo edit lab/app.py</p>
+  </div>
+</section>
+
+<section class="slide" id="s-debug-cases">
+  <div class="slide-content">
+    <div class="section-badge badge-framework">The Cases</div>
+    <h2 class="s-title">Grain and time semantics</h2>
+    <div class="grid-2" style="max-width:900px;margin:2rem auto 0">
+      <div class="card" style="border-color:rgba(249,115,22,0.3)"><span class="icon">01</span><h3>Inflated sessions</h3><p>A shop join changes the number of fact rows. Find the failed key assumption and restore the intended grain.</p></div>
+      <div class="card" style="border-color:rgba(6,182,212,0.3)"><span class="icon">02</span><h3>Misleading duration</h3><p>A date calculation counts midnight crossings. Decide whether the metric means calendar days or elapsed hours.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s-debug-method">
+  <div class="slide-content">
+    <div class="section-badge badge-framework">Investigation Loop</div>
+    <h2 class="s-title">Evidence before correction</h2>
+    <div class="grid-4" style="max-width:1000px;margin:2rem auto 0">
+      <div class="card" style="text-align:center"><span class="icon" style="color:var(--blue)">1</span><h3>Define</h3><p>State the metric and expected grain.</p></div>
+      <div class="card" style="text-align:center"><span class="icon" style="color:var(--purple)">2</span><h3>Inspect</h3><p>Check keys, row counts, and boundaries.</p></div>
+      <div class="card" style="text-align:center"><span class="icon" style="color:var(--orange)">3</span><h3>Isolate</h3><p>Find the smallest counterexample.</p></div>
+      <div class="card" style="text-align:center"><span class="icon" style="color:var(--green)">4</span><h3>Validate</h3><p>Use an independent reconciliation.</p></div>
+    </div>
+    <p style="color:var(--text2);font-size:1.05rem;margin-top:1.5rem">AI is allowed. You own every assumption and validation claim.</p>
+  </div>
+</section>
+
+<section class="slide timer-slide" id="s-timer-debug">
+  <div class="glow glow-cyan"></div>
+  <div class="slide-content">
+    <div class="timer-display" id="timer-debug-display">35:00</div>
+    <div class="timer-label">SQL Debugging Lab</div>
+    <div class="timer-sub">15 minutes per case, then 5 minutes for handoff notes</div>
+    <button class="timer-btn" onclick="toggleTimer('debug',2100)">Start Timer</button>
+  </div>
+</section>
+
 <!-- SLIDE 11: EXERCISE 1 TITLE -->
 <section class="slide" id="s-ex1-title">
   <div class="glow glow-green"></div>
   <div class="slide-content">
-    <div class="section-badge badge-exercise">Exercise 1</div>
+    <div class="section-badge badge-exercise">Exercise 2</div>
     <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">The<br>Explanation Lab</h2>
     <p class="s-sub">Practice explaining technical concepts out loud — to just 2 people.</p>
   </div>
@@ -490,7 +536,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
 <section class="slide" id="s-ex2-title">
   <div class="glow glow-purple"></div>
   <div class="slide-content">
-    <div class="section-badge badge-exercise">Exercise 2</div>
+    <div class="section-badge badge-exercise">Exercise 3</div>
     <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">Own Your<br>Project</h2>
     <p class="s-sub">Write and rehearse an interview-ready project pitch. Then stress-test it.</p>
   </div>
@@ -585,7 +631,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
 <section class="slide" id="s-ex3-title">
   <div class="glow glow-pink"></div>
   <div class="slide-content">
-    <div class="section-badge badge-exercise">Exercise 3</div>
+    <div class="section-badge badge-exercise">Exercise 4</div>
     <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">The Real<br>Thing</h2>
     <p class="s-sub">Full mock interview simulation. One round each. As close to real as possible.</p>
   </div>
@@ -663,9 +709,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
   <div class="slide-content">
     <div class="section-badge badge-closing">Resources</div>
     <h2 class="s-title">Stay Connected</h2>
-    <p class="s-sub">I'll share the slides file with everything from tonight — exercises, mock interviews, frameworks, and question banks. It's all in one place.</p>
-    <div class="grid-2" style="max-width:600px;margin:2rem auto 0;text-align:center">
-      <div class="card"><h3>Exercise Questions</h3><p>All streams, with follow-ups</p></div>
+    <p class="s-sub">The repository includes the lab, exercises, mock interviews, frameworks, and question banks.</p>
+    <p style="color:var(--text3);font-size:0.8rem;margin:-1.25rem auto 1.5rem">Independent educational material. Synthetic data. No Shopify endorsement.</p>
+    <div class="grid-2" style="max-width:600px;margin:1rem auto 0;text-align:center">
+      <div class="card"><h3>Debugging Lab</h3><p>Marimo, DuckDB, guides, and tests</p></div>
       <div class="card"><h3>Mock Interviews</h3><p>Click-through examples with annotations</p></div>
       <div class="card"><h3>Frameworks</h3><p>STAR-T, Why Ladder, Explanation Pattern</p></div>
       <div class="card"><h3>Question Bank</h3><p>Full bank by stream and category</p></div>
