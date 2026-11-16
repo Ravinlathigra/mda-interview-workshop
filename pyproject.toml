@@ -9,7 +9,7 @@ description = "Interactive technical interview workshop and SQL debugging lab"
 requires-python = ">=3.11"
 dependencies = [
   "duckdb>=1.1",
-  "marimo>=0.16",
+  "marimo>=0.25.2,<0.26",
 ]
 
 [project.optional-dependencies]
@@ -22,3 +22,5 @@ testpaths = ["tests"]
 [tool.setuptools.packages.find]
 include = ["lab*"]
 
+[tool.setuptools.package-data]
+lab = ["data/*.csv"]

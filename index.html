@@ -386,17 +386,17 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--b
     <div class="section-badge badge-exercise">Exercise 1</div>
     <h2 class="hero-title" style="font-size:clamp(2.5rem,8vw,5rem)">SQL<br>Debugging Lab</h2>
     <p class="s-sub">Two queries run successfully and return believable answers. Both answers are wrong.</p>
-    <p style="color:var(--text3);font-family:var(--mono);font-size:0.95rem">marimo edit lab/app.py</p>
+    <p style="color:var(--text3);font-family:var(--mono);font-size:0.95rem">marimo run lab/app.py --port 2718</p>
   </div>
 </section>
 
 <section class="slide" id="s-debug-cases">
   <div class="slide-content">
     <div class="section-badge badge-framework">The Cases</div>
-    <h2 class="s-title">Grain and time semantics</h2>
+    <h2 class="s-title">Two reports to investigate</h2>
     <div class="grid-2" style="max-width:900px;margin:2rem auto 0">
-      <div class="card" style="border-color:rgba(249,115,22,0.3)"><span class="icon">01</span><h3>Inflated sessions</h3><p>A shop join changes the number of fact rows. Find the failed key assumption and restore the intended grain.</p></div>
-      <div class="card" style="border-color:rgba(6,182,212,0.3)"><span class="icon">02</span><h3>Misleading duration</h3><p>A date calculation counts midnight crossings. Decide whether the metric means calendar days or elapsed hours.</p></div>
+      <div class="card" style="border-color:rgba(249,115,22,0.3)"><span class="icon">01</span><h3>An unexpected count</h3><p>A report counts 10 sessions for currently active shops. A teammate expected fewer. Establish the definition and find evidence.</p></div>
+      <div class="card" style="border-color:rgba(6,182,212,0.3)"><span class="icon">02</span><h3>A surprising duration</h3><p>A report says 6 of 8 sessions lasted at least one day. Product partners mean 24 elapsed hours. Does the query agree?</p></div>
     </div>
   </div>
 </section>

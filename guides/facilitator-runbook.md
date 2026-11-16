@@ -15,10 +15,12 @@ handing off a validated correction. The exercise uses synthetic commerce data.
    source .venv/bin/activate
    python -m pip install -e ".[dev]"
    python -m pytest
-   marimo check lab/app.py
+   marimo check --strict lab/app.py
    ```
 
-2. Start the notebook with `marimo edit lab/app.py` and confirm both query editors run.
+2. Start the app with `marimo run lab/app.py --host 127.0.0.1 --port 2718`.
+   Open http://localhost:2718 and confirm both Run buttons work. Test a multi-row
+   diagnostic query and download a handoff. Use `marimo edit` only for authoring.
 3. Keep `solutions/` closed while candidates work.
 4. Ask participants to install dependencies before the session when possible.
 5. Have a browser tab with `workshop.html` and a separate tab with the Marimo lab.
@@ -40,7 +42,9 @@ handing off a validated correction. The exercise uses synthetic commerce data.
 ## Group roles
 
 For each case, assign an investigator, interviewer, and observer. In pairs, the
-interviewer also records evidence. Rotate after case 1.
+interviewer also records evidence. Rotate after case 1. With three participants,
+the third person leads the final five-minute handoff and proposes an independent
+validation check; two cases do not give all three a full investigator turn.
 
 - The investigator shares the screen and narrates the investigation.
 - The interviewer asks for definitions, evidence, and validation without giving the fix.
@@ -65,6 +69,9 @@ Reveal the reference solutions only after groups present evidence.
 
 For case 1, emphasize that a syntactically correct join can change the fact-table grain.
 `COUNT(DISTINCT)` repairs this output but can conceal the model defect.
+Clarify that “active” refers to the latest available snapshot, not session-time status.
+Resolve the latest snapshot before filtering active; an older active row must not
+override a newer inactive row. Accept alternatives that implement the same contract.
 
 For case 2, ask participants to compare `ses_001` and `ses_004`. One crosses midnight
 after ten minutes. The other lasts 24.5 hours. The metric owner must choose which
@@ -73,9 +80,22 @@ definition matters before the engineer chooses SQL.
 Close with the common pattern: define the business meaning, inspect grain and boundaries,
 isolate a counterexample, correct the logic, and validate independently.
 
+Ask each participant to download their handoff before closing the app. Notes are
+session-local and are not saved to the repository automatically.
+
 ## Recovery plan
 
-If Marimo does not start, run the queries from any DuckDB client after loading the CSVs,
+If Marimo does not start, run the queries from a Python terminal after installation:
+
+```python
+from lab.database import create_connection, BROKEN_SESSION_COUNT_QUERY, BROKEN_DURATION_QUERY
+db = create_connection()
+print(db.execute(BROKEN_SESSION_COUNT_QUERY).fetchall())
+print(db.execute(BROKEN_DURATION_QUERY).fetchall())
+# Inspect: db.execute("SELECT * FROM sessions").fetchall()
+```
+
+Use the metric-owner brief in the candidate guide,
 or pair the affected participant with a working group. Do not spend lab time debugging
 individual Python installations. The candidate and interviewer guides contain the full
 prompt and rubric.
@@ -85,4 +105,3 @@ prompt and rubric.
 Present Ravin Lathigra accurately as a Staff Data Engineer at Shopify. Frame observations
 as his professional perspective and workshop guidance. Do not describe the lab as an
 official Shopify interview, process, dataset, or endorsement.
-

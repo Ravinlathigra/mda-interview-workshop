@@ -20,13 +20,14 @@ def _():
         BROKEN_SESSION_COUNT_QUERY,
         create_connection,
     )
-    from lab.query_utils import execute_query
+    from lab.query_utils import execute_query, table_records
 
     return (
         BROKEN_DURATION_QUERY,
         BROKEN_SESSION_COUNT_QUERY,
         create_connection,
         execute_query,
+        table_records,
         mo,
     )
 
@@ -383,11 +384,16 @@ def _(connection, execute_query, mo):
                 """
                 <div class="section-head">
                   <div class="case-kicker">Dataset / inspect before assuming</div>
-                  <h2>Two small tables, one hidden trap</h2>
+                  <h2>Inspect the source data</h2>
                   <p>
                     <code>shops</code> is a dimension-style extract and
                     <code>sessions</code> should contain one row per session.
                     Treat both claims as hypotheses until the data supports them.
+                    Shop status is measured at the latest available snapshot for each shop,
+                    not at the session's start. Snapshot timestamps are unique within a shop.
+                    Session timestamps are UTC, stored without timezone offsets; every
+                    session has a known end at or after its start. Long sessions are
+                    deliberate teaching examples, not a real commerce session policy.
                   </p>
                 </div>
                 """
@@ -422,47 +428,64 @@ def _(BROKEN_SESSION_COUNT_QUERY, mo):
         language="sql",
         theme="dark",
         min_height=210,
-        debounce=350,
+        debounce=0,
         label="Case 1 SQL editor",
-    )
-    return (case_one_query,)
-
-
-@app.cell
-def _(case_one_query, connection, execute_query, mo):
+    ).form(submit_button_label="Run case 1 query", bordered=False)
     case_one_notes = mo.ui.text_area(
         placeholder="Diagnosis, evidence, corrected result, and one validation check...",
         full_width=True,
         rows=5,
-        label="Investigation notes",
+        label="Case 1 investigation notes",
     )
+    return case_one_query, case_one_notes
 
-    try:
-        case_one_columns, case_one_rows = execute_query(
-            connection, case_one_query.value
-        )
-        case_one_result = mo.hstack(
-            [
-                mo.stat(value, label=column, bordered=True)
-                for column, value in zip(
-                    case_one_columns, case_one_rows[0], strict=True
+
+@app.cell
+def _(execute_query, mo, table_records):
+    def run_and_render(connection, query):
+        try:
+            columns, rows = execute_query(connection, query)
+            if not rows:
+                return mo.callout(
+                    "0 rows returned. The query ran successfully; check your filters.",
+                    kind="info",
                 )
-            ],
-            justify="start",
-            gap=1,
-            wrap=True,
-        )
-    except Exception as error:
-        case_one_result = mo.callout(
-            mo.md(f"`{error}`"), kind="danger", title="Query error"
-        )
+            result = mo.ui.table(
+                table_records(columns, rows[:200]),
+                selection=None,
+                pagination=len(rows) > 10,
+                page_size=10,
+                show_column_summaries=False,
+                show_data_types=False,
+                show_download=False,
+                label="Query results",
+            )
+            if len(rows) > 200:
+                return mo.vstack([
+                    mo.callout(
+                        "Showing the first 200 rows. Refine the query to inspect the rest.",
+                        kind="warn",
+                    ),
+                    result,
+                ])
+            return result
+        except Exception as error:
+            return mo.callout(
+                mo.plain_text(str(error)), kind="danger", title="Query error"
+            )
+    return (run_and_render,)
+
+
+@app.cell
+def _(BROKEN_SESSION_COUNT_QUERY, case_one_query, case_one_notes, connection, run_and_render, mo):
+    case_one_result = run_and_render(connection, BROKEN_SESSION_COUNT_QUERY if case_one_query.value is None else case_one_query.value)
 
     case_one_panel = mo.vstack(
         [
             mo.Html(
                 """
                 <div class="case-head">
-                  <div class="case-kicker">Case 01 / join grain</div>
+                  <div class="case-kicker">Case 01 / 15 minutes</div>
                   <h2>The session count jumped</h2>
                   <p>
                     An analyst reports <strong>10 sessions for active shops</strong>.
@@ -473,7 +496,7 @@ def _(case_one_query, connection, execute_query, mo):
                 """
             ),
             case_one_query,
-            mo.Html('<div class="result-label">Live query result</div>'),
+            mo.Html('<div class="result-label">Last submitted query result · press Run after editing</div>'),
             case_one_result,
             mo.accordion(
                 {
@@ -502,7 +525,7 @@ def _(case_one_query, connection, execute_query, mo):
             "box-shadow": "0 22px 70px rgba(0,0,0,.28)",
         },
     )
-    return (case_one_notes,)
+    return
 
 
 @app.cell
@@ -512,48 +535,29 @@ def _(BROKEN_DURATION_QUERY, mo):
         language="sql",
         theme="dark",
         min_height=285,
-        debounce=350,
+        debounce=0,
         label="Case 2 SQL editor",
-    )
-    return (case_two_query,)
-
-
-@app.cell
-def _(case_two_query, connection, execute_query, mo):
+    ).form(submit_button_label="Run case 2 query", bordered=False)
     case_two_notes = mo.ui.text_area(
         placeholder="Metric definition, counterexample, corrected result, and boundary test...",
         full_width=True,
         rows=5,
-        label="Investigation notes",
+        label="Case 2 investigation notes",
     )
+    return case_two_query, case_two_notes
 
-    try:
-        case_two_columns, case_two_rows = execute_query(
-            connection, case_two_query.value
-        )
-        case_two_result = mo.hstack(
-            [
-                mo.stat(value, label=column, bordered=True)
-                for column, value in zip(
-                    case_two_columns, case_two_rows[0], strict=True
-                )
-            ],
-            justify="start",
-            gap=1,
-            wrap=True,
-        )
-    except Exception as error:
-        case_two_result = mo.callout(
-            mo.md(f"`{error}`"), kind="danger", title="Query error"
-        )
+
+@app.cell
+def _(BROKEN_DURATION_QUERY, case_two_query, case_two_notes, connection, run_and_render, mo):
+    case_two_result = run_and_render(connection, BROKEN_DURATION_QUERY if case_two_query.value is None else case_two_query.value)
 
     case_two_panel = mo.vstack(
         [
             mo.Html(
                 """
                 <div class="case-head">
-                  <div class="case-kicker orange">Case 02 / time semantics</div>
-                  <h2>One day can mean two different things</h2>
+                  <div class="case-kicker orange">Case 02 / 15 minutes</div>
+                  <h2>What does “one day” measure?</h2>
                   <p>
                     A report says <strong>6 of 8 sessions lasted at least one day</strong>.
                     Product partners read that as 24 elapsed hours. Test whether the SQL
@@ -563,7 +567,7 @@ def _(case_two_query, connection, execute_query, mo):
                 """
             ),
             case_two_query,
-            mo.Html('<div class="result-label">Live query result</div>'),
+            mo.Html('<div class="result-label">Last submitted query result · press Run after editing</div>'),
             case_two_result,
             mo.accordion(
                 {
@@ -592,7 +596,25 @@ def _(case_two_query, connection, execute_query, mo):
             "box-shadow": "0 22px 70px rgba(0,0,0,.28)",
         },
     )
-    return (case_two_notes,)
+    return
+
+
+@app.cell
+def _(BROKEN_SESSION_COUNT_QUERY, BROKEN_DURATION_QUERY, case_one_query, case_two_query, case_one_notes, case_two_notes, mo):
+    handoff_text = (
+        "# SQL debugging handoff\n\n"
+        "## Case 1\n\n```sql\n"
+        + (BROKEN_SESSION_COUNT_QUERY if case_one_query.value is None else case_one_query.value)
+        + "\n```\n\n" + case_one_notes.value
+        + "\n\n## Case 2\n\n```sql\n"
+        + (BROKEN_DURATION_QUERY if case_two_query.value is None else case_two_query.value)
+        + "\n```\n\n" + case_two_notes.value + "\n"
+    )
+    mo.vstack([
+        mo.md("Save your handoff before closing or refreshing. The download includes your **last submitted queries** and notes; unsubmitted SQL edits are not included."),
+        mo.download(handoff_text.encode("utf-8"), filename="debugging-handoff.md", mimetype="text/markdown", label="Download my handoff"),
+    ])
+    return
 
 
 @app.cell

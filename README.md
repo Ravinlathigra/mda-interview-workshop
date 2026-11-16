@@ -28,16 +28,19 @@ debugging, communication, and independent validation. All data is synthetic.
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e ".[dev]"
-marimo edit lab/app.py
+marimo run lab/app.py --host 127.0.0.1 --port 2718
 ```
 
-Then open the local URL Marimo prints.
+Then open http://localhost:2718. Use the SQL editors and Run buttons to investigate;
+the app displays all result rows (up to 200), including diagnostic queries.
+Download your handoff before refreshing or closing the tab. Queries and notes live
+in the current browser session. To edit the notebook source, use `marimo edit lab/app.py`.
 
 ## Run the checks
 
 ```bash
 python -m pytest
-marimo check lab/app.py
+marimo check --strict lab/app.py
 ```
 
 The tests pin the intended failure modes and corrected results.
@@ -74,10 +77,11 @@ questions, mock interview bank, resources, and a new Debugging Lab tab.
 - `interviewer-guide.md` includes prompts, reference outcomes, and a behavioral rubric.
 - `facilitator-runbook.md` fits the lab into a two-hour workshop and includes recovery steps.
 
-### `solutions/` and `tests/`: protected reference material
+### `solutions/` and `tests/`: facilitator reference material
 
-The SQL solutions are separate from the candidate notebook. Tests verify the duplicate-key
-inflation, the calendar-boundary error, and the expected corrected metrics.
+The SQL solutions are separate from the candidate notebook but visible in this repository;
+participants should leave them closed until the debrief. Tests verify duplicate-key
+inflation, status changes, time boundaries, and query-runner behavior.
 
 ## Static materials
 

@@ -7,8 +7,8 @@ You do not need to know DuckDB or Marimo in advance. Standard SQL reasoning is e
 
 You will work through two cases using fictional commerce data:
 
-- a session count that grows after joining to a shop dimension
-- a duration metric that confuses calendar days with elapsed time
+- an unexpectedly high session count for active shops
+- a report claiming that 6 of 8 sessions lasted at least one day
 
 AI tools are allowed. You may use them to recall syntax, generate a diagnostic query,
 or challenge an assumption. You must be able to explain and validate anything you keep.
@@ -21,11 +21,36 @@ From the repository root:
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e ".[dev]"
-marimo edit lab/app.py
+marimo run lab/app.py --host 127.0.0.1 --port 2718
 ```
 
-Your browser will open the notebook. Work only in the query editors and note fields.
-You do not need to change the source files.
+Open http://localhost:2718. Edit a query and press its Run button. Results correspond
+to the last submitted query, not any unfinished edits. Diagnostic queries display
+all rows up to a 200-row preview; an empty result is valid. Run one `SELECT`, `WITH`,
+`DESCRIBE`, or `EXPLAIN` statement at a time. The exercise tables cannot be edited
+through the query boxes.
+
+Notes survive query runs. Before refreshing or closing, use **Download my handoff**
+to save your last submitted queries and notes. Submit your final edits first.
+
+## Metric-owner brief and data dictionary
+
+Ask for clarification before choosing a correction. Use these agreed definitions:
+
+- Case 1 counts sessions belonging to shops whose **latest available snapshot** says
+  active. It does not ask whether a shop was active when the session began.
+- `shops`: `shop_id`, `shop_name`, `plan`, `status`, `snapshot_at`. Snapshot timestamps
+  are unique within each shop. Establish the actual table grain yourself.
+- `sessions`: `session_id`, `shop_id`, `started_at`, `ended_at`, `channel`.
+  Expected grain is one row per session. All timestamps represent UTC and are stored
+  without timezone offsets. End times are present and never precede start times.
+- Case 2 includes all eight sessions, including inactive shops. “At least one day”
+  means at least **24 elapsed hours**, with equality included.
+- The unusually long sessions deliberately test metric semantics. They do not model
+  Shopify's session timeout policy or real shop activity.
+
+If a real dataset violated these assumptions, agree on a missing-data or tie-breaking
+policy before reporting a metric. Optional: build a small `VALUES` CTE to test boundaries.
 
 ## A useful investigation loop
 
@@ -56,4 +81,3 @@ Do not open the `solutions/` folder until the facilitator begins the debrief.
 All shops, sessions, names, timestamps, and results in this repository are synthetic.
 The scenario borrows common commerce vocabulary for teaching. It does not use Shopify
 data and does not represent or imply Shopify endorsement.
-
