@@ -15,13 +15,13 @@ or challenge an assumption. You must be able to explain and validate anything yo
 
 ## Start the lab
 
-From the repository root:
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first.
+From the repository root, run the commands below. uv installs the pinned Python and
+dependencies; you do not need to activate a virtual environment.
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e ".[dev]"
-marimo run lab/app.py --host 127.0.0.1 --port 2718
+uv sync --locked
+uv run --locked marimo run lab/app.py --host 127.0.0.1 --port 2718
 ```
 
 Open http://localhost:2718. Edit a query and press its Run button. Results correspond
@@ -74,7 +74,17 @@ For each case, prepare a two-minute handoff:
 - an independent validation check
 - any ambiguity you would resolve with the metric owner
 
-Do not open the `solutions/` folder until the facilitator begins the debrief.
+## Reveal and run the solutions
+
+Each case has a **Reveal solution** section below the investigation notes. It starts
+collapsed so you can investigate first. Open it during the debrief, or whenever you
+want the answer during self-study. Read the explanation, then click **Run case 1
+solution** or **Run case 2 solution**. You can edit and rerun the reference SQL in
+that section without replacing your own query or notes.
+
+Compare the expected results with your evidence and try the suggested validation
+checks. The handoff download contains your candidate queries and notes; copy any
+reference experiments you want to keep into your notes before downloading.
 
 ## Data notice
 

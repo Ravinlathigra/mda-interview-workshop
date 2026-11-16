@@ -24,23 +24,33 @@ debugging, communication, and independent validation. All data is synthetic.
 
 ## Run the lab
 
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) once, then run
+these commands from the repository root. uv manages Python 3.12 and the environment;
+no manual virtual-environment activation is needed. Commit `uv.lock` so everyone
+uses the same resolved dependency versions, including CI.
+
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e ".[dev]"
-marimo run lab/app.py --host 127.0.0.1 --port 2718
+uv sync --locked
+uv run --locked marimo run lab/app.py --host 127.0.0.1 --port 2718
 ```
 
 Then open http://localhost:2718. Use the SQL editors and Run buttons to investigate;
 the app displays all result rows (up to 200), including diagnostic queries.
 Download your handoff before refreshing or closing the tab. Queries and notes live
-in the current browser session. To edit the notebook source, use `marimo edit lab/app.py`.
+in the current browser session. To edit the notebook source, use
+`uv run --locked marimo edit lab/app.py`.
+
+Each case includes a collapsed **Reveal solution** section with the explanation,
+editable reference SQL, expected results, and its own **Run solution** button.
+Reveal it during the debrief or when reviewing independently. Running a solution
+does not replace your candidate query or notes. The handoff exports your candidate
+work; copy any reference experiments you want to retain into your notes.
 
 ## Run the checks
 
 ```bash
-python -m pytest
-marimo check --strict lab/app.py
+uv run --locked pytest
+uv run --locked marimo check --strict lab/app.py
 ```
 
 The tests pin the intended failure modes and corrected results.
@@ -79,8 +89,9 @@ questions, mock interview bank, resources, and a new Debugging Lab tab.
 
 ### `solutions/` and `tests/`: facilitator reference material
 
-The SQL solutions are separate from the candidate notebook but visible in this repository;
-participants should leave them closed until the debrief. Tests verify duplicate-key
+The notebook loads reference SQL directly from `solutions/`, so the runnable answers
+and tested queries stay in sync. They are available in collapsed sections in each case;
+participants can reveal them for the debrief or self-study. Tests verify duplicate-key
 inflation, status changes, time boundaries, and query-runner behavior.
 
 ## Static materials

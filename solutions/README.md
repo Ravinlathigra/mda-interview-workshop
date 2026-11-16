@@ -1,6 +1,8 @@
 # Reference solutions
 
-Keep this folder out of the candidate's view during the exercise.
+These files are the source of truth for both tests and the notebook's **Reveal
+solution** sections. Participants can reveal, edit, and run them inside the notebook
+during the debrief or self-study. Leave them collapsed for the initial investigation.
 
 ## Case 1
 

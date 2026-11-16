@@ -101,4 +101,7 @@ continuously. Do not infer lack of reasoning from a pause.
 ## Reference material
 
 The executable answers live in `solutions/case_1.sql` and `solutions/case_2.sql`.
+Each notebook case loads its answer into a collapsed **Reveal solution** section
+with editable SQL, explanation, expected output, and a separate Run button. Keep it
+collapsed during investigation and open it together during the debrief.
 Automated checks in `tests/test_lab.py` pin the intended broken and corrected results.

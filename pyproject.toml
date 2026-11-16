@@ -12,7 +12,7 @@ dependencies = [
   "marimo>=0.25.2,<0.26",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = ["pytest>=8"]
 
 [tool.pytest.ini_options]

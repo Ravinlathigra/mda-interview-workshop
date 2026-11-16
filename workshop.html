@@ -389,9 +389,10 @@ function buildDebugLabTab() {
 
   <div class="framework">
     <h3>Start the lab</h3>
-    <p style="font-family:var(--mono);font-size:0.9rem;margin:0.8rem 0">marimo run lab/app.py --port 2718</p>
+    <p style="font-family:var(--mono);font-size:0.9rem;margin:0.8rem 0">uv sync --locked<br>uv run --locked marimo run lab/app.py --port 2718</p>
     <p>Use the setup steps in <strong>guides/candidate-guide.md</strong> if this is your first run.</p>
     <p>Open <a href="http://localhost:2718/" target="_blank" rel="noopener">your local lab</a>, edit SQL, and press Run. Download your handoff before refreshing or closing.</p>
+    <p>For the debrief or self-study, open <strong>Reveal solution</strong> in either case. Read the explanation and run or edit the reference SQL without replacing your own work.</p>
   </div>
 
   <div class="section-title">Case 1: Inflated session counts</div>

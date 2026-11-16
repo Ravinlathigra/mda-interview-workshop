@@ -8,20 +8,21 @@ handing off a validated correction. The exercise uses synthetic commerce data.
 
 ## Before the session
 
-1. Install the repository once and run the checks:
+1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) once, then
+   use the committed lockfile for the same environment participants and CI use:
 
    ```bash
-   python -m venv .venv
-   source .venv/bin/activate
-   python -m pip install -e ".[dev]"
-   python -m pytest
-   marimo check --strict lab/app.py
+   uv sync --locked
+   uv run --locked pytest
+   uv run --locked marimo check --strict lab/app.py
    ```
 
-2. Start the app with `marimo run lab/app.py --host 127.0.0.1 --port 2718`.
+2. Start the app with `uv run --locked marimo run lab/app.py --host 127.0.0.1 --port 2718`.
    Open http://localhost:2718 and confirm both Run buttons work. Test a multi-row
-   diagnostic query and download a handoff. Use `marimo edit` only for authoring.
-3. Keep `solutions/` closed while candidates work.
+   diagnostic query and download a handoff. Use `uv run --locked marimo edit lab/app.py`
+   only for authoring.
+3. Confirm each **Reveal solution** section opens and its Run button works. Keep
+   these sections collapsed during the initial investigation.
 4. Ask participants to install dependencies before the session when possible.
 5. Have a browser tab with `workshop.html` and a separate tab with the Marimo lab.
 
@@ -65,7 +66,11 @@ validation. Stop a long SQL walkthrough and ask for the stakeholder-facing expla
 
 ## Debrief
 
-Reveal the reference solutions only after groups present evidence.
+After groups present evidence, ask everyone to open **Reveal solution** below each
+case's notes and press its **Run solution** button. Walk through the explanation
+and validate the result together. Participants can edit the reference SQL and rerun
+it independently of their own investigation. The notebook reads the tested SQL in
+`solutions/` directly, avoiding duplicate versions of the answers.
 
 For case 1, emphasize that a syntactically correct join can change the fact-table grain.
 `COUNT(DISTINCT)` repairs this output but can conceal the model defect.
@@ -85,7 +90,8 @@ session-local and are not saved to the repository automatically.
 
 ## Recovery plan
 
-If Marimo does not start, run the queries from a Python terminal after installation:
+If Marimo does not start, open a Python terminal with `uv run --locked python`
+after `uv sync --locked` and run:
 
 ```python
 from lab.database import create_connection, BROKEN_SESSION_COUNT_QUERY, BROKEN_DURATION_QUERY

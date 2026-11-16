@@ -29,6 +29,7 @@ def _():
         execute_query,
         table_records,
         mo,
+        project_root,
     )
 
 
@@ -477,7 +478,22 @@ def _(execute_query, mo, table_records):
 
 
 @app.cell
-def _(BROKEN_SESSION_COUNT_QUERY, case_one_query, case_one_notes, connection, run_and_render, mo):
+def _(mo, project_root):
+    case_one_solution = mo.ui.code_editor(
+        value=(project_root / "solutions" / "case_1.sql").read_text(),
+        language="sql", theme="dark", min_height=340, debounce=0,
+        label="Case 1 reference SQL",
+    ).form(submit_button_label="Run case 1 solution", bordered=False)
+    case_two_solution = mo.ui.code_editor(
+        value=(project_root / "solutions" / "case_2.sql").read_text(),
+        language="sql", theme="dark", min_height=300, debounce=0,
+        label="Case 2 reference SQL",
+    ).form(submit_button_label="Run case 2 solution", bordered=False)
+    return case_one_solution, case_two_solution
+
+
+@app.cell
+def _(BROKEN_SESSION_COUNT_QUERY, case_one_query, case_one_notes, case_one_solution, connection, run_and_render, mo):
     case_one_result = run_and_render(connection, BROKEN_SESSION_COUNT_QUERY if case_one_query.value is None else case_one_query.value)
 
     case_one_panel = mo.vstack(
@@ -511,6 +527,28 @@ def _(BROKEN_SESSION_COUNT_QUERY, case_one_query, case_one_notes, connection, ru
                 }
             ),
             case_one_notes,
+            mo.accordion({
+                "Reveal solution · Case 1": mo.vstack([
+                    mo.md("""
+                    **Why the count changes:** shop 101 has two snapshots and three
+                    sessions. Joining both snapshots duplicates those three sessions,
+                    producing 10 instead of **7**.
+
+                    Select the latest snapshot **across all statuses**, then filter
+                    active. Filtering active first could incorrectly retain a shop
+                    that later became inactive. Try the query below, or edit this
+                    separate reference editor to explore alternatives.
+
+                    **Validate independently:** list session IDs after the join and
+                    reconcile them to the seven sessions for shops 101, 102, and 104.
+                    Add a newer inactive snapshot in a test to check status changes.
+                    """),
+                    case_one_solution,
+                    run_and_render(connection, case_one_solution.value)
+                    if case_one_solution.value is not None
+                    else mo.md("Press **Run case 1 solution** to execute. Expected count: **7**."),
+                ]),
+            }, expanded=False),
         ],
         gap=1.15,
     )
@@ -548,7 +586,7 @@ def _(BROKEN_DURATION_QUERY, mo):
 
 
 @app.cell
-def _(BROKEN_DURATION_QUERY, case_two_query, case_two_notes, connection, run_and_render, mo):
+def _(BROKEN_DURATION_QUERY, case_two_query, case_two_notes, case_two_solution, connection, run_and_render, mo):
     case_two_result = run_and_render(connection, BROKEN_DURATION_QUERY if case_two_query.value is None else case_two_query.value)
 
     case_two_panel = mo.vstack(
@@ -582,6 +620,25 @@ def _(BROKEN_DURATION_QUERY, case_two_query, case_two_notes, connection, run_and
                 }
             ),
             case_two_notes,
+            mo.accordion({
+                "Reveal solution · Case 2": mo.vstack([
+                    mo.md("""
+                    **Why the metric changes:** truncating timestamps to dates measures
+                    midnight crossings. Session `ses_001` crosses midnight in only
+                    ten minutes. Compare the full elapsed interval with **24 hours**,
+                    including equality; keep all eight sessions in the denominator.
+
+                    **Validate independently:** inspect each duration. Only `ses_004`
+                    (24.5 hours) and `ses_007` (49 hours) qualify: **2 of 8, or 25%**.
+                    Test just below, exactly at, and just above 24 hours. An empty
+                    population has zero sessions and an undefined (NULL) percentage.
+                    """),
+                    case_two_solution,
+                    run_and_render(connection, case_two_solution.value)
+                    if case_two_solution.value is not None
+                    else mo.md("Press **Run case 2 solution** to execute. Expected result: **2 / 8 / 25.0%**."),
+                ]),
+            }, expanded=False),
         ],
         gap=1.15,
     )
