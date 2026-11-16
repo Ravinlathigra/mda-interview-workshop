@@ -1,107 +1,70 @@
-# Bridging the Gap: MDA Technical Interview Workshop v2
+# Bridging the Gap: MDA Technical Interview Workshop
 
-A two-hour interactive workshop for MDA students at Western University. Version 2 adds
-a hands-on SQL debugging interview to the existing explanation, project-story, and mock
-interview exercises.
+A one-hour workshop for MDA students at Western University, centred on explaining
+technical thinking, responding to follow-ups, and improving an answer through feedback.
+The closing section applies those skills to pair-programming interviews with AI agents.
 
 **Presenter:** Ravin Lathigra, MDA alumnus and Staff Data Engineer at Shopify
 
 **Presentation term:** Winter 2026
 
-Ravin's employer and role provide professional context only. This independent educational
-workshop is not an official Shopify interview, dataset, process, or endorsement.
+This is independent educational material and Ravin's professional perspective, not an
+official Shopify interview, hiring policy, dataset, or endorsement. Examples are fictional.
 
-## What's new in v2
+## Open the workshop
 
-The Marimo and DuckDB lab asks candidates to investigate two queries that run and return
-plausible but incorrect results:
+Open `index.html` for the presenter deck and `workshop.html` for the participant reference.
+No installation, Python environment, notebook, or build step is needed.
 
-1. A shop-dimension join inflates session counts because the shop key is not unique.
-2. Date truncation turns midnight crossings into "one day" even when little time elapsed.
-
-Candidates may use AI. The evaluation focuses on metric clarification, hypothesis-driven
-debugging, communication, and independent validation. All data is synthetic.
-
-## Run the lab
-
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/) once, then run
-these commands from the repository root. uv manages Python 3.12 and the environment;
-no manual virtual-environment activation is needed. Commit `uv.lock` so everyone
-uses the same resolved dependency versions, including CI.
-
-```bash
-uv sync --locked
-uv run --locked marimo run lab/app.py --host 127.0.0.1 --port 2718
-```
-
-Then open http://localhost:2718. Use the SQL editors and Run buttons to investigate;
-the app displays all result rows (up to 200), including diagnostic queries.
-Download your handoff before refreshing or closing the tab. Queries and notes live
-in the current browser session. To edit the notebook source, use
-`uv run --locked marimo edit lab/app.py`.
-
-Each case includes a collapsed **Reveal solution** section with the explanation,
-editable reference SQL, expected results, and its own **Run solution** button.
-Reveal it during the debrief or when reviewing independently. Running a solution
-does not replace your candidate query or notes. The handoff exports your candidate
-work; copy any reference experiments you want to retain into your notes.
-
-## Run the checks
-
-```bash
-uv run --locked pytest
-uv run --locked marimo check --strict lab/app.py
-```
-
-The tests pin the intended failure modes and corrected results.
-
-## Workshop files
-
-### `index.html`: presenter slide deck
-
-The self-contained HTML deck retains the workshop's original visual style and interactive
-timers. Version 2 adds the debugging lab to the agenda and presentation flow.
-
-Navigation:
-
-- Arrow keys or spacebar advance slides.
-- Mock interview slides use arrow keys to step through each conversation.
-- Timeline dots jump to any slide.
-- The bottom bar shows progress and slide count.
-
-### `workshop.html`: participant reference app
-
-The self-contained tabbed app includes the workshop frameworks, stream-specific practice
-questions, mock interview bank, resources, and a new Debugging Lab tab.
-
-### `lab/`: candidate workspace
-
-- `app.py` is the interactive Marimo notebook.
-- `database.py` loads deterministic data into an in-memory DuckDB database.
-- `data/` contains the fictional shop and session CSVs.
-- `query_utils.py` keeps notebook output lightweight and dependency-free.
-
-### `guides/`: delivery and evaluation
-
-- `candidate-guide.md` explains setup, expectations, and the investigation loop.
-- `interviewer-guide.md` includes prompts, reference outcomes, and a behavioral rubric.
-- `facilitator-runbook.md` fits the lab into a two-hour workshop and includes recovery steps.
-
-### `solutions/` and `tests/`: facilitator reference material
-
-The notebook loads reference SQL directly from `solutions/`, so the runnable answers
-and tested queries stay in sync. They are available in collapsed sections in each case;
-participants can reveal them for the debrief or self-study. Tests verify duplicate-key
-inflation, status changes, time boundaries, and query-runner behavior.
-
-## Static materials
-
-The two HTML files have no build step. Open them directly in a browser:
-
-```bash
+```sh
 open index.html
 open workshop.html
 ```
 
-Google Fonts load from a CDN when internet access is available. The workshop content and
-interactions remain in the local files.
+Both files work directly in a browser. Google Fonts load when internet access is available,
+with local fallback fonts when offline. To preview over HTTP, optionally run
+`python3 -m http.server 2718 --bind 127.0.0.1`, then open http://localhost:2718/.
+
+## One-hour flow
+
+| Time | Activity |
+| --- | --- |
+| 0–5 min | Overview and what we are practising |
+| 5–12 min | Weak and stronger explanations, with the Why Ladder |
+| 12–17 min | Explanation framework, groups, and question selection |
+| 17–35 min | Three explanation rounds, six minutes per person |
+| 35–45 min | Second attempt at the same question, three minutes per person plus transitions |
+| 45–48 min | Debrief: what improved and why? |
+| 48–60 min | Pair-programming tips, worked examples, and questions |
+
+The closing section covers permitted agent use, independent validation, and explaining
+how a solution serves the business requirement. A ten-minute session crossing midnight
+demonstrates calendar-date versus elapsed-time comparisons. A fictional dragon-parking
+policy shows why the interviewer must clarify the intended rule.
+
+## Materials and navigation
+
+- `index.html`: one-hour presenter flow with built-in timers. Arrow keys or space advance.
+  Timeline dots jump between slides. Links can target a slide, such as
+  `index.html#s-pair-dates`.
+- `index.html?extended=1#s-extra`: optional original interview simulations, STAR-T project
+  pitches, and mock interview rounds. These appear after the closing slide and are outside
+  the one-hour agenda. The interactive simulations step through dialogue with arrow keys.
+- `workshop.html`: original stream-specific explanation cards, frameworks, mock interview
+  bank, and resources, plus a Pair Programming tab. No coding setup is required.
+- `guides/facilitator-runbook.md`: timing, group instructions, debrief prompts, and speaker
+  notes for the closing examples.
+
+The former Marimo/DuckDB lab and its dependencies have been removed. Previous versions
+remain recoverable in Git history.
+
+## Maintainer checks
+
+The checks use Python's standard library and Node.js, with no package installation:
+
+```sh
+python3 -m unittest discover -s tests -v
+```
+
+They check HTML structure and local links, JavaScript syntax, the one-hour agenda,
+timer wiring, optional slides, and the timestamp example's boundary results.

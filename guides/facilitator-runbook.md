@@ -1,113 +1,118 @@
-# Facilitator runbook: workshop v2 debugging lab
+# Facilitator runbook: one-hour explanation workshop
 
-## Purpose
+## Aim and preparation
 
-This module adds a practical debugging interview to the existing explanation and project
-story exercises. Participants practice forming a hypothesis, producing evidence, and
-handing off a validated correction. The exercise uses synthetic commerce data.
+Help participants make technical reasoning understandable, respond to a challenge, and
+improve an explanation. Finish by applying those same skills to pair-programming interviews.
+No coding exercise or software installation is required.
 
-## Before the session
+Open `index.html` and share `workshop.html`. Confirm the timers work. Use the default
+deck for the one-hour session. The Extra practice link opens the original simulations,
+project pitches, and mock rounds separately from the main flow. Do not try to fit them
+into this hour. Participants can revisit them later.
 
-1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) once, then
-   use the committed lockfile for the same environment participants and CI use:
+Introduce Ravin Lathigra as a Staff Data Engineer at Shopify and MDA alumnus. This is his
+independent professional perspective, not an official Shopify interview or hiring policy.
+All worked examples are fictional. The presentation term is Winter 2026.
 
-   ```bash
-   uv sync --locked
-   uv run --locked pytest
-   uv run --locked marimo check --strict lab/app.py
-   ```
+## 60-minute agenda
 
-2. Start the app with `uv run --locked marimo run lab/app.py --host 127.0.0.1 --port 2718`.
-   Open http://localhost:2718 and confirm both Run buttons work. Test a multi-row
-   diagnostic query and download a handoff. Use `uv run --locked marimo edit lab/app.py`
-   only for authoring.
-3. Confirm each **Reveal solution** section opens and its Run button works. Keep
-   these sections collapsed during the initial investigation.
-4. Ask participants to install dependencies before the session when possible.
-5. Have a browser tab with `workshop.html` and a separate tab with the Marimo lab.
-
-## Recommended 120-minute workshop flow
-
-| Time | Activity | Facilitator focus |
+| Time | Slides / activity | Facilitation |
 | --- | --- | --- |
-| 0:00-0:15 | Opening, evaluation lens, live examples | Explain that plausible output still needs evidence |
-| 0:15-0:20 | Form groups and open the lab | Groups of two or three, one shared screen |
-| 0:20-0:55 | SQL debugging lab | 15 minutes per case, 5 minutes for handoff notes |
-| 0:55-1:05 | Lab debrief | Compare failure modes and validation strategies |
-| 1:05-1:10 | Break | Keep the lab available for later review |
-| 1:10-1:30 | Explanation lab | Shorten to one round per participant |
-| 1:30-1:50 | STAR-T project pitch | Require one tradeoff and one validation detail |
-| 1:50-1:58 | Mock interview round | Use a stream-specific question |
-| 1:58-2:00 | Commitments and close | Capture one practice action |
+| 0–5 min | Title, format, evaluation lens | Set the goal: make reasoning easy to follow and question |
+| 5–12 min | Why Ladder, fraud explanation comparison | Ask what the second answer clarifies beyond the definition |
+| 12–17 min | Groups, warm-up, Explanation Pattern, instructions | Form triads, introduce yourselves, choose one question each |
+| 17–35 min | First pass, three rounds | Six minutes per person: think 1, explain 2, follow-up 2, feedback 1 |
+| 35–45 min | Second attempt | Three minutes each: revise 30s, explain 60s, follow-up 45s, feedback 45s. Allow 1 minute for transitions |
+| 45–48 min | Debrief | Ask for a specific improvement and the question that prompted it |
+| 48–58 min | Pair-programming closing examples | Roughly two minutes per closing slide |
+| 58–60 min | Questions and close | Share the reference page and invite a future practice session |
 
-## Group roles
+Keep the opener on screen before the session. The first explanation round starts at
+minute 17. If the introduction runs long, shorten the demo discussion, not the second attempt.
 
-For each case, assign an investigator, interviewer, and observer. In pairs, the
-interviewer also records evidence. Rotate after case 1. With three participants,
-the third person leads the final five-minute handoff and proposes an independent
-validation check; two cases do not give all three a full investigator turn.
+## Explanation rounds
 
-- The investigator shares the screen and narrates the investigation.
-- The interviewer asks for definitions, evidence, and validation without giving the fix.
-- The observer records one strong behavior and one missed opportunity.
+Participants choose a Universal or stream-specific explanation card in `workshop.html`.
+Keep that question for both attempts. The first pass uses the Think, Explain, Follow-up,
+and Feedback timer slides. Return to Think after each role rotation. The second pass uses
+the three-minute timer once per participant. Call its phase changes at 2:30, 1:30, and 0:45
+remaining. Use the first minute of the second-pass block for instructions and transitions.
 
-AI is allowed. Ask the investigator to state when AI contributed a query and then explain
-the query's assumptions. The observer should record whether the candidate validated it.
+- Explainer: use plain language, intuition, a concrete example, and a limitation.
+- Listener: ask the card's follow-up, then connect it to a decision or counterexample.
+- Observer: name one clear point and one actionable improvement. Check correctness as
+  well as delivery. Fluent explanations can still contain faulty reasoning.
 
-## Facilitation cues
+In pairs, the listener also gives feedback. Use the third slot to compare explanations
+or try a different follow-up. Nobody needs to present to the whole room.
 
-At five minutes, ask: "What do you believe is wrong, and what evidence would disprove
-that belief?"
+Useful questions: “Who needs this?”, “What would change your answer?”, “Can you give a
+small example?”, and “What would you check before trusting that result?” If a claim is
+uncertain, record what evidence would settle it instead of inventing an answer.
 
-At ten minutes, ask: "What is the smallest row or count that demonstrates the failure?"
+AI is optional for preparation or critique. The participant gives the explanation in
+their own words and responds to follow-ups. No one needs an account or tool installation.
 
-At the handoff, require five points: definition, diagnosis, evidence, correction, and
-validation. Stop a long SQL walkthrough and ask for the stakeholder-facing explanation.
+## Closing: pair programming and agents
 
-## Debrief
+### 1. Agent use and collaboration
 
-After groups present evidence, ask everyone to open **Reveal solution** below each
-case's notes and press its **Run solution** button. Walk through the explanation
-and validate the result together. Participants can edit the reference SQL and rerun
-it independently of their own investigation. The notebook reads the tested SQL in
-`solutions/` directly, avoiding duplicate versions of the answers.
+Recommend using an agent when the interview explicitly permits it. Check the rules first,
+use approved tools and data, and be transparent about what the agent contributed. Some
+interviews prohibit AI. This workshop does not describe any particular employer's policy.
 
-For case 1, emphasize that a syntactically correct join can change the fact-table grain.
-`COUNT(DISTINCT)` repairs this output but can conceal the model defect.
-Clarify that “active” refers to the latest available snapshot, not session-time status.
-Resolve the latest snapshot before filtering active; an older active row must not
-override a newer inactive row. Accept alternatives that implement the same contract.
+Show the connection to the exercise: an agent can propose code, but the candidate must
+explain its assumptions, debug unexpected results, and justify the checks. Give it a small
+task, inspect the change, predict expected results, then test. An agent generating both
+the implementation and matching tests is not independent evidence of correctness.
 
-For case 2, ask participants to compare `ses_001` and `ses_004`. One crosses midnight
-after ten minutes. The other lasts 24.5 hours. The metric owner must choose which
-definition matters before the engineer chooses SQL.
+### 2. Calendar dates versus elapsed time
 
-Close with the common pattern: define the business meaning, inspect grain and boundaries,
-isolate a counterexample, correct the logic, and validate independently.
+Display `s-pair-dates`. Read the timestamps aloud: January 10 at 23:55 to January 11 at
+00:05, in UTC. Ask “Did this last a day?” before discussing the table.
 
-Ask each participant to download their handoff before closing the app. Notes are
-session-local and are not saved to the repository automatically.
+There are ten elapsed minutes, but the date changed. Both comparisons have a legitimate
+meaning. If the requirement is at least 24 elapsed hours, a date comparison implements
+the wrong rule. Do not present calendar-date comparisons as inherently defective.
 
-## Recovery plan
+Ask the audience to say which question each comparison actually answers. This is an
+explanation exercise, not a SQL syntax quiz. No notebook or database is needed.
 
-If Marimo does not start, open a Python terminal with `uv run --locked python`
-after `uv sync --locked` and run:
+### 3. Debugging and validation
 
-```python
-from lab.database import create_connection, BROKEN_SESSION_COUNT_QUERY, BROKEN_DURATION_QUERY
-db = create_connection()
-print(db.execute(BROKEN_SESSION_COUNT_QUERY).fetchall())
-print(db.execute(BROKEN_DURATION_QUERY).fetchall())
-# Inspect: db.execute("SELECT * FROM sessions").fetchall()
-```
+Display `s-pair-debug`. Model the spoken explanation on the slide. The tiny midnight
+example disproves the date rule for a duration requirement. Compare unambiguous timestamp
+instants to measure elapsed time. Confirm the expected results before running code:
 
-Use the metric-owner brief in the candidate guide,
-or pair the affected participant with a working group. Do not spend lab time debugging
-individual Python installations. The candidate and interviewer guides contain the full
-prompt and rubric.
+| Duration | At least 24 hours? |
+| --- | --- |
+| 10 minutes across midnight | No |
+| 23h 59m | No |
+| 24h exactly | Yes |
+| 24h 01m | Yes |
 
-## Attribution note
+Equality matters because the requirement says “at least.” These checks do not prove all
+cases. Ask about missing end times, end-before-start records, and time zones next. Local
+calendar days can differ from 24 hours around daylight-saving changes. Agree on a local
+zone for date rules and use unambiguous instants for duration rules.
 
-Present Ravin Lathigra accurately as a Staff Data Engineer at Shopify. Frame observations
-as his professional perspective and workshop guidance. Do not describe the lab as an
-official Shopify interview, process, dataset, or endorsement.
+### 4. Business context, even for a silly mock
+
+Display `s-pair-business`: “Charge dragons that stay overnight.” The ten-minute stay
+qualifies for a fee on crossing local midnight, but not for a fee after a free 24-hour
+allowance. Ask which policy the interviewer intends. For the latter, also ask whether
+the fee starts exactly at 24 hours or only after it. Do not silently reuse the previous
+“at least 24 hours” rule for this different requirement.
+
+The consequence makes the definition matter: one policy charges the dragon and another
+does not. For a purely abstract puzzle, ask for the intended behavior and constraints
+instead of forcing a fabricated business story. If clarification is unavailable, state
+an assumption and continue.
+
+### 5. Handoff and questions
+
+Use `s-pair-handoff` to connect the hour: clarify the goal, explain a hypothesis, demonstrate
+a check, and name what remains uncertain. Narrate decisions instead of every keystroke.
+Invite the interviewer to collaborate. Reserve the final two minutes for questions and
+sharing `workshop.html`. The original question bank and extra slides remain available.

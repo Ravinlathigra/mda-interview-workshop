@@ -1,8 +1,0 @@
-shop_id,shop_name,plan,status,snapshot_at
-101,Maple Outfitters,plus,active,2026-01-01 00:00:00
-101,Maple Outfitters,plus,active,2026-02-01 00:00:00
-102,Northern Stationery,basic,active,2026-02-01 00:00:00
-103,Harbour Home,basic,inactive,2026-02-01 00:00:00
-104,Cedar Cycling,grow,active,2026-02-01 00:00:00
-105,Juniper Goods,basic,active,2026-02-01 00:00:00
-

@@ -137,7 +137,7 @@ const TABS = [
   {id:'demle',label:'DE / MLE'},
   {id:'swe',label:'SWE'},
   {id:'aiswe',label:'AI / SWE'},
-  {id:'debug',label:'Debugging Lab'},
+  {id:'pair',label:'Pair Programming'},
   {id:'mock',label:'Mock Interviews'},
   {id:'resources',label:'Resources'}
 ];
@@ -299,13 +299,21 @@ function buildHome() {
   </div>
 
   <div class="framework">
+    <h2>Today's one-hour workshop</h2>
+    <p>Overview and examples (17 min), explanation rounds (18 min), second attempts and debrief (13 min), then pair-programming tips and questions (12 min). No software setup.</p>
+    <p><strong>First pass:</strong> in groups of three, each person gets 1 minute to think, 2 to explain, 2 for follow-ups, and 1 for feedback. Rotate roles.</p>
+    <p><strong>Second pass:</strong> keep the same question. Each person gets 30 seconds to revise, 60 to explain, 45 for a follow-up, and 45 for feedback. Name one improvement you heard.</p>
+    <p>Pick a stream tab for your explanation question. The mock interview bank and STAR-T material are optional practice after the session.</p>
+  </div>
+
+  <div class="framework">
     <h2>The "Why" Ladder</h2>
     <p>Every answer should survive 3 levels of "why." The interviewer is listening for Level 3.</p>
     <table>
       <tr><th>Level</th><th>Example</th></tr>
       <tr><td>Level 1: What</td><td>"I used Random Forest."</td></tr>
       <tr><td>Level 2: How</td><td>"It handles non-linear relationships using bagging."</td></tr>
-      <tr><td style="color:var(--green)">Level 3: Why</td><td>"My features had complex interactions. With 50K rows, bagging reduces variance without overfitting. And I needed feature importances for my non-technical stakeholder."</td></tr>
+      <tr><td style="color:var(--green)">Level 3: Why</td><td>"My features had complex interactions. With 50K rows, bagging can reduce variance. I would still check performance on held-out data. And I needed feature importances for my non-technical stakeholder."</td></tr>
     </table>
   </div>
 
@@ -322,7 +330,7 @@ function buildHome() {
   </div>
 
   <div class="framework">
-    <h2>STAR-T Framework</h2>
+    <h2>STAR-T Framework (extra practice)</h2>
     <p>A checklist, not a script. Works for any project in any stream.</p>
     <table>
       <tr><th>Letter</th><th>Stands For</th><th>What to Say</th></tr>
@@ -349,7 +357,7 @@ function buildStreamTab(streamKey, streamLabel, tagClass) {
   let html = `<h2>${streamLabel}</h2>`;
 
   // Exercise cards
-  html += `<div class="section-title">Exercise 1: The Explanation Lab</div>`;
+  html += `<div class="section-title">The Explanation Lab</div>`;
   if (streamKey === 'universal') {
     html += renderCards(cards);
   } else {
@@ -358,7 +366,7 @@ function buildStreamTab(streamKey, streamLabel, tagClass) {
 
   // Mock interview questions
   if (mockCats.length > 0) {
-    html += `<div class="section-title">Exercise 3: Mock Interview Questions</div>`;
+    html += `<div class="section-title">Optional practice: Mock Interview Questions</div>`;
     html += renderMockQuestions(mockCats, true);
   }
 
@@ -382,60 +390,57 @@ function buildMockInterviewsTab() {
   return html;
 }
 
-function buildDebugLabTab() {
+function buildPairProgrammingTab() {
   return `
-  <h2>SQL Debugging Lab</h2>
-  <p style="color:var(--text-dim);margin-bottom:1.5rem">Two queries run and return believable answers. Your job is to establish whether those answers deserve trust.</p>
-
+  <h2>Pair-programming interviews</h2>
+  <p style="color:var(--text-dim);margin-bottom:1.5rem">The explanation skills you practised also apply when you work through code with another person.</p>
   <div class="framework">
-    <h3>Start the lab</h3>
-    <p style="font-family:var(--mono);font-size:0.9rem;margin:0.8rem 0">uv sync --locked<br>uv run --locked marimo run lab/app.py --port 2718</p>
-    <p>Use the setup steps in <strong>guides/candidate-guide.md</strong> if this is your first run.</p>
-    <p>Open <a href="http://localhost:2718/" target="_blank" rel="noopener">your local lab</a>, edit SQL, and press Run. Download your handoff before refreshing or closing.</p>
-    <p>For the debrief or self-study, open <strong>Reveal solution</strong> in either case. Read the explanation and run or edit the reference SQL without replacing your own work.</p>
-  </div>
-
-  <div class="section-title">Case 1: Inflated session counts</div>
-  <div class="exercise-card" onclick="toggleCard(this)">
-    <div class="card-header"><span class="tag tag-demle">SQL / Data</span><span class="reveal-hint">Click for interview prompt</span></div>
-    <div class="card-prompt">A query reports 10 sessions for active shops. Investigate before the metric reaches a dashboard.</div>
-    <div class="card-reveal">
-      <div class="followup-label">Your handoff must include</div>
-      <p>The expected grain, the failed assumption, a corrected result, and an independent validation check.</p>
-    </div>
-  </div>
-
-  <div class="section-title">Case 2: Calendar days and elapsed time</div>
-  <div class="exercise-card" onclick="toggleCard(this)">
-    <div class="card-header"><span class="tag tag-bada">Metrics / Time</span><span class="reveal-hint">Click for interview prompt</span></div>
-    <div class="card-prompt">A report says 6 of 8 sessions lasted at least one day. Product partners interpret that as at least 24 elapsed hours.</div>
-    <div class="card-reveal">
-      <div class="followup-label">Your handoff must include</div>
-      <p>A precise definition, one counterexample, the corrected result, and a boundary test.</p>
-    </div>
-  </div>
-
-  <div class="section-title">Investigation loop</div>
-  <div class="framework">
+    <h3>Using AI agents</h3>
+    <p>Check the interview's policy first. If agents are allowed, use them for a small draft, a hypothesis, or a review. Explain what you accepted and why. Use only approved tools and data. You can practise without AI too.</p>
     <table>
-      <tr><th>Step</th><th>Question</th><th>Evidence</th></tr>
-      <tr><td>Define</td><td>What should the metric and one row mean?</td><td>A plain-language definition and expected grain</td></tr>
-      <tr><td>Inspect</td><td>Which assumption could make the output wrong?</td><td>Key uniqueness, row counts, nulls, and boundary values</td></tr>
-      <tr><td>Isolate</td><td>What is the smallest proof?</td><td>A counterexample row or intermediate count</td></tr>
-      <tr><td>Correct</td><td>How does the SQL express the definition?</td><td>A query whose grain and time semantics are explicit</td></tr>
-      <tr><td>Validate</td><td>What independent check could catch a regression?</td><td>Reconciliation plus a targeted test</td></tr>
+      <tr><th>Your responsibility</th><th>What to say or do</th></tr>
+      <tr><td>Clarify</td><td>Who needs this result? What decision will it change? What counts as success?</td></tr>
+      <tr><td>Collaborate</td><td>Describe your next step and invite the interviewer to challenge an assumption.</td></tr>
+      <tr><td>Debug</td><td>State a hypothesis. Find the smallest input that could disprove it.</td></tr>
+      <tr><td>Validate</td><td>Predict expected results independently before running the agent's code.</td></tr>
+      <tr><td>Explain</td><td>Connect the result to the agreed requirement. Name what remains untested.</td></tr>
     </table>
   </div>
-
-  <div class="resource-card">
-    <h3 style="color:var(--accent)">AI use</h3>
-    <p>AI tools are allowed for syntax, hypotheses, and critique. Explain every query you keep and validate its assumptions independently.</p>
+  <div class="framework">
+    <h3>Calendar dates versus elapsed time</h3>
+    <p>Fictional session in UTC: <strong>January 10, 23:55 to January 11, 00:05</strong>. Only <strong>10 minutes</strong> elapsed.</p>
+    <table>
+      <tr><th>Comparison</th><th>Result</th><th>Meaning</th></tr>
+      <tr><td>End date &gt; start date</td><td>Yes</td><td>Crossed a calendar date</td></tr>
+      <tr><td>Elapsed time ≥ 24 hours</td><td>No</td><td>Did not last at least 24 hours</td></tr>
+    </table>
+    <p>Neither definition is universally wrong. Comparing dates is wrong <em>for a 24-hour duration requirement</em>. Clarify what “a day” means before choosing the comparison.</p>
+    <div class="key-sentence">“The agent compared dates and discarded the time. This ten-minute example disproves that rule for our requirement. I'll compare elapsed time and check the threshold.”</div>
+    <table>
+      <tr><th>Test for at least 24 elapsed hours</th><th>Expected</th></tr>
+      <tr><td>10 minutes across midnight</td><td>No</td></tr>
+      <tr><td>23h 59m</td><td>No</td></tr>
+      <tr><td>24h exactly</td><td>Yes</td></tr>
+      <tr><td>24h 01m</td><td>Yes</td></tr>
+    </table>
+    <p>Then discuss missing end times, reversed timestamps, and time zones. A local calendar day can differ from 24 elapsed hours around a daylight-saving change. Agree on a reporting zone for date-based rules. For elapsed duration, compare timestamps representing unambiguous instants.</p>
   </div>
-
-  <div class="resource-card">
-    <h3>Data notice</h3>
-    <p>All data is synthetic and uses fictional shops and sessions. The lab uses common commerce vocabulary for education. It is not an official Shopify interview, process, dataset, or endorsement.</p>
-  </div>`;
+  <div class="framework">
+    <h3>Even a silly prompt has a business problem</h3>
+    <p><strong>“Charge dragons that stay overnight.”</strong> One dragon arrives at 23:55 and leaves at 00:05.</p>
+    <table>
+      <tr><th>Policy</th><th>Ten-minute stay</th><th>Clarify</th></tr>
+      <tr><td>Crossing local midnight incurs a fee</td><td>Qualifies</td><td>Which local time zone?</td></tr>
+      <tr><td>The first 24 elapsed hours are free</td><td>Does not qualify</td><td>Does the fee start at 24h or after 24h?</td></tr>
+    </table>
+    <p>Ask: “Is this a nightly parking fee or a duration allowance?” If the interviewer leaves the policy open, state an assumption and proceed. Do not invent a real business context for an abstract puzzle. Ask what behavior the function should implement.</p>
+  </div>
+  <div class="framework">
+    <h3>A five-minute practice round</h3>
+    <p>One minute: clarify the dragon policy. Two minutes: explain your rule and predict boundary tests. One minute: your partner changes the requirement. One minute: explain what changes and what stays valid.</p>
+    <p>An agent can propose a solution if you both agree. You must still be able to debug and explain it without asking the agent to speak for you.</p>
+  </div>
+  <div class="resource-card"><h3>Attribution</h3><p>Ravin Lathigra is a Staff Data Engineer at Shopify. These are independent workshop examples and personal professional guidance, not an official Shopify interview, policy, dataset, or endorsement.</p></div>`;
 }
 
 function buildResourcesTab() {
@@ -619,7 +624,7 @@ function init() {
       case 'demle': content = buildStreamTab('demle','DE / MLE','tag-demle'); break;
       case 'swe': content = buildStreamTab('swe','SWE','tag-swe'); break;
       case 'aiswe': content = buildStreamTab('aiswe','AI / SWE','tag-aiswe'); break;
-      case 'debug': content = buildDebugLabTab(); break;
+      case 'pair': content = buildPairProgrammingTab(); break;
       case 'mock': content = buildMockInterviewsTab(); break;
       case 'resources': content = buildResourcesTab(); break;
     }
