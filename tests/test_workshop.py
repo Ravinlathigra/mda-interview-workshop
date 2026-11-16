@@ -141,7 +141,7 @@ process.stdout.write(JSON.stringify(pages));
     def test_pair_programming_content_is_in_reference(self):
         pair = self.pages['pair']
         for phrase in ['AI agents', 'interview\'s policy', '10 minutes', '24h exactly',
-                       'dragon', 'independent', 'Staff Data Engineer', 'endorsement']:
+                       'dragon', 'independent', 'Staff Data Engineer']:
             self.assertIn(phrase, pair)
         self.assertIn("{id:'pair',label:'Pair Programming'}", self.reference)
         self.assertNotIn("{id:'debug'", self.reference)

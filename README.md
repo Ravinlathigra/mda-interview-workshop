@@ -8,8 +8,7 @@ The closing section applies those skills to pair-programming interviews with AI 
 
 **Presentation term:** Winter 2026
 
-This is independent educational material and Ravin's professional perspective, not an
-official Shopify interview, hiring policy, dataset, or endorsement. Examples are fictional.
+Workshop examples are fictional.
 
 ## Open the workshop
 

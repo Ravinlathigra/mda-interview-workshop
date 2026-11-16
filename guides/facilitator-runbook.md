@@ -11,8 +11,7 @@ deck for the one-hour session. The Extra practice link opens the original simula
 project pitches, and mock rounds separately from the main flow. Do not try to fit them
 into this hour. Participants can revisit them later.
 
-Introduce Ravin Lathigra as a Staff Data Engineer at Shopify and MDA alumnus. This is his
-independent professional perspective, not an official Shopify interview or hiring policy.
+Introduce Ravin Lathigra as a Staff Data Engineer at Shopify and MDA alumnus.
 All worked examples are fictional. The presentation term is Winter 2026.
 
 ## 60-minute agenda
