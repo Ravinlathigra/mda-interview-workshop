@@ -2,8 +2,8 @@
 
 A 2-hour interactive workshop helping MDA students at Western University prepare for technical interviews across data and engineering streams.
 
-**Presenter:** Ravin Lathigra (MDA Alumnus, Senior Data Developer @ Shopify)
-**Date:** February 23, 2026
+**Presenter:** Ravin Lathigra (MDA Alumnus, Staff Data Engineer @ Shopify)
+**Date:** Winter 2026
 
 ---
 
