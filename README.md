@@ -6,7 +6,7 @@ interview exercises.
 
 **Presenter:** Ravin Lathigra, MDA alumnus and Staff Data Engineer at Shopify
 
-**Original workshop date:** February 23, 2026
+**Presentation term:** Winter 2026
 
 Ravin's employer and role provide professional context only. This independent educational
 workshop is not an official Shopify interview, dataset, process, or endorsement.
